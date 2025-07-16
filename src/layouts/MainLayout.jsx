@@ -1,12 +1,13 @@
+import Header from "../components/Header"
 
 const MainLayout = ({ children }) => {
     return (
         <div className="flex">
-            <div>
+            <div className="w-1/5">
                 aside bar
             </div>
-            <div>
-                <div>header</div>
+            <div className="w-full">
+                <Header />
                 {children}
             </div>
         </div>
