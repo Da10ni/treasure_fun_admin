@@ -1,10 +1,9 @@
 import React from 'react'
+import ReferralPercentage from '../components/referrals/ReferralPercentage'
 
 const Refferals = () => {
   return (
-    <div>
-      Refferals settings
-    </div>
+    <ReferralPercentage/>
   )
 }
 

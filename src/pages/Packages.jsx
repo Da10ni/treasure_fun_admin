@@ -1,8 +1,9 @@
 import React from 'react'
+import PackagesPage from '../components/packages/PackagesPage'
 
 const Packages = () => {
   return (
-    <div>Packages</div>
+    <PackagesPage/>
   )
 }
 
