@@ -6,7 +6,7 @@ const  Sidebar=({activeTab,setActiveTab}) =>{
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     return (
-    <div style={{background: 'linear-gradient(90deg, #99bced, #99f8cf, #ffd6c7)'}} className={`${sidebarOpen ? 'w-64 absolute md:sticky top-0 z-60' : 'w-20'} h-screen  text-black transition-all duration-300 ease-in-out flex flex-col`}>
+    <div className={`${sidebarOpen ? 'w-64 absolute md:sticky top-0 z-60' : 'w-20'} h-screen bg-gray-100 shadow-lg text-black transition-all duration-300 ease-in-out flex flex-col`}>
         {/* Logo */}
         <div className="flex items-center justify-between p-4 border-b border-indigo-200">
           {sidebarOpen && <h1 className="text-xl font-bold">Admin Panel</h1>}

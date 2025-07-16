@@ -1,8 +1,17 @@
+import { Search } from 'lucide-react'
 import React from 'react'
 
 const User = () => {
+    const users = [
+        { id: 1001, username: 'john_doe', email: 'john@example.com', status: 'active', joinDate: '2025-01-15' },
+        { id: 1002, username: 'sarah_smith', email: 'sarah@example.com', status: 'active', joinDate: '2025-02-20' },
+        { id: 1003, username: 'mike_jones', email: 'mike@example.com', status: 'disabled', joinDate: '2025-03-10' },
+        { id: 1004, username: 'emma_wilson', email: 'emma@example.com', status: 'active', joinDate: '2025-04-05' },
+        { id: 1005, username: 'david_brown', email: 'david@example.com', status: 'active', joinDate: '2025-05-12' },
+      ];
+    
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                   <div>
@@ -14,11 +23,11 @@ const User = () => {
                       <input 
                         type="text" 
                         placeholder="Search users..." 
-                        className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="pl-10 pr-4 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       />
                       <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     </div>
-                    <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center gap-2">
+                    <button className="px-4 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 flex items-center gap-2">
                       <span>Add User</span>
                     </button>
                   </div>

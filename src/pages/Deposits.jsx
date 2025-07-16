@@ -1,8 +1,9 @@
 import React from 'react'
+import Deposit from '../components/deposits/Deposit'
 
 const Deposits = () => {
   return (
-    <div>Deposits</div>
+    <Deposit/>
   )
 }
 
