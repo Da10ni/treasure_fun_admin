@@ -2,7 +2,11 @@ import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Dashboard from './pages/Dashboard'
-import UserPage from './pages/UserPage'
+import Deposits from './pages/Deposits'
+import Withdrawals from './pages/Withdrawals'
+import Users from './pages/Users'
+import Packages from './pages/Packages'
+import Refferals from './pages/Refferals'
 
 function App() {
 
@@ -14,13 +18,25 @@ function App() {
           <MainLayout>
             <Dashboard />
           </MainLayout>} />
-        <Route path='/users' element={
+        <Route path='deposits' element={
           <MainLayout>
-          <UserPage/>
+            <Deposits />
           </MainLayout>} />
-        <Route path='withdraw' element={
+        <Route path='withdrawals' element={
           <MainLayout>
-            <div>withdraw</div>
+            <Withdrawals />
+          </MainLayout>} />
+        <Route path='users' element={
+          <MainLayout>
+            <Users />
+          </MainLayout>} />
+        <Route path='packages' element={
+          <MainLayout>
+            <Packages />
+          </MainLayout>} />
+        <Route path='referrals' element={
+          <MainLayout>
+            <Refferals />
           </MainLayout>} />
       </Routes>
     </BrowserRouter>

@@ -1,10 +1,8 @@
 import { Bell, Search, User } from 'lucide-react'
-import React, { useState } from 'react'
 
-const Header = () => {
-    const [activeTab,setActiveTab] = useState("dashboard")
+const Header = ({ activeTab }) => {
     return (
-        <header className="bg-white border-b border-gray-200 shadow-sm">
+        <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 left-0 z-50">
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center">
                     <h2 className="text-xl font-semibold">
@@ -17,7 +15,7 @@ const Header = () => {
                     </h2>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <div className="relative">
+                    <div className="relative hidden md:block">
                         <input
                             type="text"
                             placeholder="Search..."
