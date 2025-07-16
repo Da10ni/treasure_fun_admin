@@ -1,6 +1,7 @@
 
 import React from "react";
 import Recentadditions from "../components/dashboard/Recentadditions";
+import DashboardStats from "../components/dashboard/DashboardStats";
 
 const Dashboard = () => {
   const pendingDeposits = [
@@ -46,8 +47,10 @@ const Dashboard = () => {
   return (
     <div className='p-4'>
       <DashboardStats />
+      <div className="w-full flex flex-col gap-6 py-5">
       <Recentadditions name={"deposit"} data={pendingDeposits} />
       <Recentadditions name={"withdrawal"} data={recentWithdrawals} />
+      </div>
     </div>
   );
 };

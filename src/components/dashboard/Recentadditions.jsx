@@ -3,8 +3,6 @@ import React from "react";
 const Recentadditions = ({data,name}) => {
 
   return (
-    <div className="flex flex-column">
-        {/* Pending Deposits */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="p-4 border-b border-gray-300 flex justify-between items-center">
             <h3 className="font-semibold">{name}</h3>
@@ -61,7 +59,6 @@ const Recentadditions = ({data,name}) => {
             </table>
           </div>
         </div>
-      </div>
   );
 };
 
