@@ -3,7 +3,7 @@ import React from "react";
 const Recentadditions = ({data,name}) => {
 
   return (
-    <div className="flex flex-column">
+    <div className="flex flex-col w-full p-5">
         {/* Pending Deposits */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="p-4 border-b border-gray-300 flex justify-between items-center">

@@ -43,9 +43,9 @@ const Dashboard = () => {
     },
   ];
   return (
-    <div>
-      <Recentadditions name={"deposit"} data={pendingDeposits} />
-      <Recentadditions name={"withdrawal"} data={recentWithdrawals} />
+    <div className="bg-gray-50 ">
+      <Recentadditions name={"Pending Deposit"} data={pendingDeposits} />
+      <Recentadditions name={"Recent Withdrawal"} data={recentWithdrawals} />
     </div>
   );
 };
