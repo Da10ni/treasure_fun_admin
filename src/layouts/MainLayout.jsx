@@ -1,12 +1,13 @@
+import Sidebar from "../components/global/Sidebar"
 
 const MainLayout = ({ children }) => {
     return (
         <div className="flex">
             <div>
-                aside bar
+                <Sidebar/>
             </div>
             <div>
-                <div>header</div>
+                <div>headerdffdf</div>
                 {children}
             </div>
         </div>
