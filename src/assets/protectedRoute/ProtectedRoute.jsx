@@ -4,7 +4,7 @@ import { getTokenFromCookie } from "../../services/auth";
 const ProtectedRoute = ({ children }) => {
   const token = getTokenFromCookie();
 
-  if (!token) {
+  if (token) {
     return <Navigate to="/login" replace />;
   }
 

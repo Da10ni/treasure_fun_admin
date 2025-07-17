@@ -5,11 +5,12 @@ import Dashboard from './pages/Dashboard'
 import Deposits from './pages/Deposits'
 import Withdrawals from './pages/Withdrawals'
 import Users from './pages/Users'
-import Packages from './pages/Packages'
+import Packages from './pages/Products'
 import Refferals from './pages/Refferals'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './assets/protectedRoute/ProtectedRoute'
+import Products from './pages/Products'
 
 function App() {
 
@@ -47,12 +48,15 @@ function App() {
             </MainLayout>
           </ProtectedRoute>
         } />
-        <Route path='packages' element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Packages />
-            </MainLayout>
-          </ProtectedRoute>
+        <Route path='products' element={
+          // <ProtectedRoute>
+          //   <MainLayout>
+          //     <Packages />
+          //   </MainLayout>
+          // </ProtectedRoute>
+          <MainLayout>
+            <Products />
+          </MainLayout>
         } />
         <Route path='referrals' element={
           <ProtectedRoute>

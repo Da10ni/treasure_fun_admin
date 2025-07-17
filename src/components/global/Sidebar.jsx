@@ -58,9 +58,9 @@ const  Sidebar=({activeTab,setActiveTab}) =>{
               </Link>
             </li>
             <li>
-              <Link to={'/packages'}
-                onClick={() => setActiveTab('packages')} 
-                className={`flex items-center w-full p-2 rounded-md hover:bg-indigo-200 transition-colors ${activeTab === 'packages' ? 'bg-white text-black' : ''}`}
+              <Link to={'/products'}
+                onClick={() => setActiveTab('products')} 
+                className={`flex items-center w-full p-2 rounded-md hover:bg-indigo-200 transition-colors ${activeTab === 'products' ? 'bg-white text-black' : ''}`}
               >
                 <PackageCheck size={20} />
                 {sidebarOpen && <span className="ml-3">Packages</span>}
