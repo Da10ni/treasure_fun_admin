@@ -7,37 +7,60 @@ import Withdrawals from './pages/Withdrawals'
 import Users from './pages/Users'
 import Packages from './pages/Packages'
 import Refferals from './pages/Refferals'
+import SignupPage from './pages/SignupPage'
+import LoginPage from './pages/LoginPage'
+import ProtectedRoute from './assets/protectedRoute/ProtectedRoute'
 
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='signup' element={<SignupPage />} />
+        <Route path='login' element={<LoginPage />} />
         <Route path='/' element={<MainLayout />} />
         <Route index element={
-          <MainLayout>
-            <Dashboard />
-          </MainLayout>} />
+          <ProtectedRoute>
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
         <Route path='deposits' element={
-          <MainLayout>
-            <Deposits />
-          </MainLayout>} />
+          <ProtectedRoute>
+            <MainLayout>
+              <Deposits />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
         <Route path='withdrawals' element={
-          <MainLayout>
-            <Withdrawals />
-          </MainLayout>} />
+          <ProtectedRoute>
+            <MainLayout>
+              <Withdrawals />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
         <Route path='users' element={
-          <MainLayout>
-            <Users />
-          </MainLayout>} />
+          <ProtectedRoute>
+            <MainLayout>
+              <Users />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
         <Route path='packages' element={
-          <MainLayout>
-            <Packages />
-          </MainLayout>} />
+          <ProtectedRoute>
+            <MainLayout>
+              <Packages />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
         <Route path='referrals' element={
-          <MainLayout>
-            <Refferals />
-          </MainLayout>} />
+          <ProtectedRoute>
+            <MainLayout>
+              <Refferals />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
       </Routes>
     </BrowserRouter>
   )
