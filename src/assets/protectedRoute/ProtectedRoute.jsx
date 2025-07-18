@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { getTokenFromCookie } from "../../services/auth";
+import { getToken } from "../../services/auth";
 
 const ProtectedRoute = ({ children }) => {
-  const token = getTokenFromCookie();
+  const token = getToken();
 
   if (token) {
     return <Navigate to="/login" replace />;
