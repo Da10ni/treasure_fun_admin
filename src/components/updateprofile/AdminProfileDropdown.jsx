@@ -21,7 +21,8 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
         );
         if (response.data.success) {
           // Optionally clear localStorage/session
-          localStorage.removeItem("user"); // or any other stored data
+          localStorage.removeItem("user");
+          localStorage.removeItem("authToken"); // or any other stored data
           console.log("Logged out successfully");
 
           navigate("/login"); // Redirect to login
