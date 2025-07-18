@@ -9,7 +9,7 @@ import Packages from './pages/Packages'
 import Refferals from './pages/Refferals'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
-import ProtectedRoute from './assets/protectedRoute/ProtectedRoute'
+import ProtectedRoute from './protectedRoute/ProtectedRoute'
 
 function App() {
 
