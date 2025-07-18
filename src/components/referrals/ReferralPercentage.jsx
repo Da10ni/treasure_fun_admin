@@ -16,8 +16,8 @@ const ReferralPercentage = () => {
                 </div>
                 <div className="p-6">
                   <form className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
+                    <div className="flex items-center justify-center">
+                      <div className='w-full'>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Basic Plan Commission (%)</label>
                         <input 
                           type="number" 
@@ -27,28 +27,6 @@ const ReferralPercentage = () => {
                           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         />
                         <p className="mt-1 text-sm text-gray-500">Current: 5% commission on Basic Plan referrals</p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Pro Plan Commission (%)</label>
-                        <input 
-                          type="number" 
-                          min="0" 
-                          max="100" 
-                          value={referralSettings.proPlan} 
-                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                        <p className="mt-1 text-sm text-gray-500">Current: 10% commission on Pro Plan referrals</p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Enterprise Plan Commission (%)</label>
-                        <input 
-                          type="number" 
-                          min="0" 
-                          max="100" 
-                          value={referralSettings.enterprisePlan} 
-                          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                        <p className="mt-1 text-sm text-gray-500">Current: 15% commission on Enterprise Plan referrals</p>
                       </div>
                     </div>
                     <div className="flex justify-end">
