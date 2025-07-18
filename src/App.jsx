@@ -49,14 +49,14 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path='products' element={
-          // <ProtectedRoute>
-          //   <MainLayout>
-          //     <Packages />
-          //   </MainLayout>
-          // </ProtectedRoute>
-          <MainLayout>
-            <Products />
-          </MainLayout>
+          <ProtectedRoute>
+            <MainLayout>
+              <Packages />
+            </MainLayout>
+          </ProtectedRoute>
+          // <MainLayout>
+          //   <Products />
+          // </MainLayout>
         } />
         <Route path='referrals' element={
           <ProtectedRoute>
