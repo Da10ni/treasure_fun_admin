@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Eye,
-  Check,
-  X,
-  RefreshCw,
-  Calendar,
-  DollarSign,
-  User,
-  Package,
-} from "lucide-react";
+import { Eye, Check, X, RefreshCw, Calendar, DollarSign, User, Package } from "lucide-react";
 
 const Deposit = () => {
   const [deposits, setDeposits] = useState([]);
@@ -17,8 +8,8 @@ const Deposit = () => {
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
-
-  const API_BASE = "http://localhost:3006/api";
+  
+  const API_BASE = "http://localhost:3007/api";
 
   // Fetch deposits from API
   const fetchDeposits = async () => {
@@ -58,57 +49,17 @@ const Deposit = () => {
     try {
       setActionLoading(depositId);
       const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        `${API_BASE}/deposits/${depositId}/approve`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            approvedBy: localStorage.getItem("userId") || "admin",
-            notes: "Approved via admin panel",
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Refresh deposits
-        fetchDeposits();
-        alert("Deposit approved successfully!");
-      } else {
-        throw new Error(data.message || "Failed to approve deposit");
-      }
-    } catch (err) {
-      alert("Error approving deposit: " + err.message);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  // Handle reject deposit
-  const handleReject = async (depositId) => {
-    const reason = prompt("Please enter rejection reason:");
-    if (!reason) return;
-
-    try {
-      setActionLoading(depositId);
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(`${API_BASE}/deposits/${depositId}/reject`, {
-        method: "PUT",
+      
+      const response = await fetch(`${API_BASE}/deposits/${depositId}/approve`, {
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          rejectedBy: localStorage.getItem("userId") || "admin",
-          reason: reason,
-        }),
+          approvedBy: localStorage.getItem('userId') || 'admin',
+          notes: 'Approved via admin panel'
+        })
       });
 
       const data = await response.json();
@@ -116,12 +67,49 @@ const Deposit = () => {
       if (data.success) {
         // Refresh deposits
         fetchDeposits();
-        alert("Deposit rejected successfully!");
+        alert('Deposit approved successfully!');
       } else {
-        throw new Error(data.message || "Failed to reject deposit");
+        throw new Error(data.message || 'Failed to approve deposit');
       }
     } catch (err) {
-      alert("Error rejecting deposit: " + err.message);
+      alert('Error approving deposit: ' + err.message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Handle reject deposit
+  const handleReject = async (depositId) => {
+    const reason = prompt('Please enter rejection reason:');
+    if (!reason) return;
+
+    try {
+      setActionLoading(depositId);
+      const token = localStorage.getItem("token");
+      
+      const response = await fetch(`${API_BASE}/deposits/${depositId}/reject`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rejectedBy: localStorage.getItem('userId') || 'admin',
+          reason: reason
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Refresh deposits
+        fetchDeposits();
+        alert('Deposit rejected successfully!');
+      } else {
+        throw new Error(data.message || 'Failed to reject deposit');
+      }
+    } catch (err) {
+      alert('Error rejecting deposit: ' + err.message);
     } finally {
       setActionLoading(null);
     }
@@ -131,7 +119,7 @@ const Deposit = () => {
   const handleViewDetails = async (depositId) => {
     try {
       const token = localStorage.getItem("token");
-
+      
       const response = await fetch(`${API_BASE}/deposits/${depositId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -145,10 +133,10 @@ const Deposit = () => {
         setSelectedDeposit(data.data);
         setShowDetailModal(true);
       } else {
-        throw new Error(data.message || "Failed to fetch deposit details");
+        throw new Error(data.message || 'Failed to fetch deposit details');
       }
     } catch (err) {
-      alert("Error fetching deposit details: " + err.message);
+      alert('Error fetching deposit details: ' + err.message);
     }
   };
 
@@ -167,26 +155,26 @@ const Deposit = () => {
 
   // Format date
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
   // Get status color
   const getStatusColor = (status) => {
     switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "approved":
-        return "bg-green-100 text-green-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
       default:
-        return "bg-gray-100 text-gray-800";
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -215,9 +203,7 @@ const Deposit = () => {
               className="flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
               disabled={loading}
             >
-              <RefreshCw
-                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-              />
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </button>
           </div>
@@ -286,10 +272,10 @@ const Deposit = () => {
                           <User className="w-4 h-4 text-gray-400" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {deposit.userId?.name || "Unknown User"}
+                              {deposit.userId?.name || 'Unknown User'}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {deposit.userId?.email || ""}
+                              {deposit.userId?.email || ''}
                             </div>
                           </div>
                         </div>
@@ -298,13 +284,13 @@ const Deposit = () => {
                         <div className="flex items-center gap-2">
                           <Package className="w-4 h-4 text-gray-400" />
                           <div className="text-sm text-gray-900">
-                            {deposit.productId?.title || "Unknown Product"}
+                            {deposit.productId?.title || 'Unknown Product'}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-green-600">
-                          ${deposit.amount?.toLocaleString() || "0"}
+                          ${deposit.amount?.toLocaleString() || '0'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -314,38 +300,32 @@ const Deposit = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                            deposit.status
-                          )}`}
-                        >
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(deposit.status)}`}>
                           {deposit.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
-                        {deposit.status === "pending" && (
+                        {deposit.status === 'pending' && (
                           <>
-                            <button
+                            <button 
                               onClick={() => handleApprove(deposit._id)}
                               disabled={actionLoading === deposit._id}
                               className="flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
                             >
                               <Check className="w-3 h-3" />
-                              {actionLoading === deposit._id
-                                ? "..."
-                                : "Approve"}
+                              {actionLoading === deposit._id ? '...' : 'Approve'}
                             </button>
-                            <button
+                            <button 
                               onClick={() => handleReject(deposit._id)}
                               disabled={actionLoading === deposit._id}
                               className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
                             >
                               <X className="w-3 h-3" />
-                              {actionLoading === deposit._id ? "..." : "Reject"}
+                              {actionLoading === deposit._id ? '...' : 'Reject'}
                             </button>
                           </>
                         )}
-                        <button
+                        <button 
                           onClick={() => handleViewDetails(deposit._id)}
                           className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
@@ -362,9 +342,7 @@ const Deposit = () => {
               {deposits.length === 0 && (
                 <div className="text-center py-12">
                   <DollarSign className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No deposits found
-                  </h3>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No deposits found</h3>
                   <p className="mt-1 text-sm text-gray-500">
                     No deposits have been created yet.
                   </p>
@@ -382,7 +360,7 @@ const Deposit = () => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold">Deposit Details</h3>
-                <button
+                <button 
                   onClick={() => setShowDetailModal(false)}
                   className="text-gray-400 hover:text-gray-600"
                 >
@@ -394,94 +372,60 @@ const Deposit = () => {
                 {/* Basic Information */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Deposit ID
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900 font-mono">
-                      #{selectedDeposit._id}
-                    </p>
+                    <label className="block text-sm font-medium text-gray-700">Deposit ID</label>
+                    <p className="mt-1 text-sm text-gray-900 font-mono">#{selectedDeposit._id}</p>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">User</label>
+                    <p className="mt-1 text-sm text-gray-900">{selectedDeposit.userId?.name || 'Unknown'}</p>
+                    <p className="text-sm text-gray-500">{selectedDeposit.userId?.email || ''}</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      User
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {selectedDeposit.userId?.name || "Unknown"}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {selectedDeposit.userId?.email || ""}
-                    </p>
+                    <label className="block text-sm font-medium text-gray-700">Product</label>
+                    <p className="mt-1 text-sm text-gray-900">{selectedDeposit.productId?.title || 'Unknown Product'}</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Product
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {selectedDeposit.productId?.title || "Unknown Product"}
-                    </p>
+                    <label className="block text-sm font-medium text-gray-700">Amount</label>
+                    <p className="mt-1 text-lg font-semibold text-green-600">${selectedDeposit.amount?.toLocaleString() || '0'}</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Amount
-                    </label>
-                    <p className="mt-1 text-lg font-semibold text-green-600">
-                      ${selectedDeposit.amount?.toLocaleString() || "0"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Status
-                    </label>
-                    <span
-                      className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                        selectedDeposit.status
-                      )}`}
-                    >
+                    <label className="block text-sm font-medium text-gray-700">Status</label>
+                    <span className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedDeposit.status)}`}>
                       {selectedDeposit.status}
                     </span>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Created At
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {formatDate(selectedDeposit.createdAt)}
-                    </p>
+                    <label className="block text-sm font-medium text-gray-700">Created At</label>
+                    <p className="mt-1 text-sm text-gray-900">{formatDate(selectedDeposit.createdAt)}</p>
                   </div>
 
                   {selectedDeposit.referredBy && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Referred By
-                      </label>
-                      <p className="mt-1 text-sm text-gray-900">
-                        {selectedDeposit.referredBy}
-                      </p>
+                      <label className="block text-sm font-medium text-gray-700">Referred By</label>
+                      <p className="mt-1 text-sm text-gray-900">{selectedDeposit.referredBy}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Attachment */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Payment Proof
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Proof</label>
                   {selectedDeposit.attachment ? (
                     <div className="border rounded-lg overflow-hidden">
-                      <img
-                        src={selectedDeposit.attachment}
-                        alt="Payment proof"
+                      <img 
+                        src={selectedDeposit.attachment} 
+                        alt="Payment proof" 
                         className="w-full h-64 object-cover"
                       />
                       <div className="p-2 bg-gray-50">
-                        <a
-                          href={selectedDeposit.attachment}
-                          target="_blank"
+                        <a 
+                          href={selectedDeposit.attachment} 
+                          target="_blank" 
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-800 text-sm"
                         >
@@ -490,17 +434,15 @@ const Deposit = () => {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500">
-                      No attachment uploaded
-                    </p>
+                    <p className="text-sm text-gray-500">No attachment uploaded</p>
                   )}
                 </div>
               </div>
 
               {/* Actions */}
-              {selectedDeposit.status === "pending" && (
+              {selectedDeposit.status === 'pending' && (
                 <div className="mt-6 flex gap-3 justify-end">
-                  <button
+                  <button 
                     onClick={() => {
                       handleReject(selectedDeposit._id);
                       setShowDetailModal(false);
@@ -509,7 +451,7 @@ const Deposit = () => {
                   >
                     Reject
                   </button>
-                  <button
+                  <button 
                     onClick={() => {
                       handleApprove(selectedDeposit._id);
                       setShowDetailModal(false);
