@@ -5,7 +5,7 @@ const User = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API_BASE = "http://localhost:3007/api";
+  const API_BASE = "http://localhost:3006/api";
 
   // Fetch users from API
   const fetchUsers = async () => {
