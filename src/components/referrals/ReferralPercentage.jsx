@@ -1,12 +1,12 @@
 import React, { useState } from "react";
+import { toast } from 'react-toastify';
 
 const ReferralPercentage = () => {
   const [referralSettings, setReferralSettings] = useState({
-    basicPlan: 5,
+    percentage: 5,
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleInputChange = (plan, value) => {
     setReferralSettings((prev) => ({
@@ -17,9 +17,13 @@ const ReferralPercentage = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setMessage("");
 
     const token = localStorage.getItem("authToken");
+
+    // Show loading toast
+    const loadingToast = toast.loading("Saving referral settings...", {
+      position: "top-right",
+    });
 
     try {
       const response = await fetch(
@@ -34,16 +38,30 @@ const ReferralPercentage = () => {
         }
       );
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+
       if (response.ok) {
         const data = await response.json();
-        setMessage("Referral settings updated successfully!");
+        
+        toast.success("✅ Referral settings updated successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        
         console.log("API Response:", data);
       } else {
         throw new Error("Failed to update settings");
       }
     } catch (error) {
+      toast.dismiss(loadingToast);
+      
       console.error("Error updating referral settings:", error);
-      setMessage("Error updating settings. Please try again.");
+      
+      toast.error("❌ Error updating settings. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -70,31 +88,18 @@ const ReferralPercentage = () => {
                   type="number"
                   min="0"
                   max="100"
-                  value={referralSettings.basicPlan}
+                  value={referralSettings.percentage}
                   onChange={(e) =>
-                    handleInputChange("basicPlan", e.target.value)
+                    handleInputChange("percentage", e.target.value)
                   }
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 />
                 <p className="mt-1 text-sm text-gray-500">
-                  Current: {referralSettings.basicPlan}% commission on Basic
+                  Current: {referralSettings.percentage}% commission on Basic
                   Plan referrals
                 </p>
               </div>
             </div>
-
-            {/* Message Display */}
-            {message && (
-              <div
-                className={`p-3 rounded-md ${
-                  message.includes("Error")
-                    ? "bg-red-50 text-red-700"
-                    : "bg-green-50 text-green-700"
-                }`}
-              >
-                {message}
-              </div>
-            )}
 
             <div className="flex justify-end">
               <button

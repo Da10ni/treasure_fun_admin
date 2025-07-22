@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+
 const API_BASE = "http://localhost:3006/api";
 
 // Signup Form Component
 const SignupForm = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -14,8 +16,6 @@ const SignupForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [codeLoading, setCodeLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -24,18 +24,37 @@ const SignupForm = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
-    if (error) setError("");
   };
 
   const handleGetCode = async () => {
     if (!formData.email) {
-      setError("Please enter your email first");
+      toast.error("Please enter your email first", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
     setCodeLoading(true);
-    setError("");
+
+    // Show loading toast
+    const loadingToast = toast.loading("Sending verification code...", {
+      position: "top-right",
+    });
 
     try {
       const response = await fetch(`${API_BASE}/auth/generate-code`, {
@@ -50,14 +69,30 @@ const SignupForm = () => {
 
       const data = await response.json();
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+
       if (data.success) {
-        setSuccess("Verification code sent to your email!");
-        setTimeout(() => setSuccess(""), 5000);
+        toast.success("📧 Verification code sent to your email!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
-        setError(data.message || "Failed to send verification code");
+        toast.error(data.message || "Failed to send verification code", {
+          position: "top-right",
+          autoClose: 5000,
+        });
       }
     } catch (error) {
-      setError("Network error. Please try again.");
+      toast.dismiss(loadingToast);
+      toast.error("Network error. Please check your connection and try again.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
       console.error("Error sending verification code:", error);
     } finally {
       setCodeLoading(false);
@@ -73,18 +108,60 @@ const SignupForm = () => {
       !formData.email ||
       !formData.emailCode
     ) {
-      setError("All fields are required!");
+      toast.error("All fields are required!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    if (formData.username.length < 3) {
+      toast.error("Username must be at least 3 characters long", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
+      toast.error("Passwords do not match!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    if (formData.emailCode.length < 4) {
+      toast.error("Please enter a valid verification code", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
     setLoading(true);
-    setError("");
-    setSuccess("");
+
+    // Show loading toast
+    const loadingToast = toast.loading("Creating your account...", {
+      position: "top-right",
+    });
 
     try {
       const response = await fetch(`${API_BASE}/admin/register`, {
@@ -103,16 +180,23 @@ const SignupForm = () => {
 
       const data = await response.json();
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+
       if (data.success) {
-        setSuccess(
-          "Registration successful! Welcome " + data.data.user.username
-      
-        );
-        navigate('/');
+        toast.success(`🎉 Registration successful! Welcome ${data.data.user.username}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
 
         localStorage.setItem("authToken", data.data.token);
         localStorage.setItem("user", JSON.stringify(data.data.user));
 
+        // Clear form
         setFormData({
           username: "",
           password: "",
@@ -121,12 +205,27 @@ const SignupForm = () => {
           emailCode: "",
         });
 
-        setTimeout(() => {}, 2000);
+        // Show redirect toast
+        toast.info("Redirecting to dashboard...", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       } else {
-        setError(data.message || "Registration failed");
+        toast.error(data.message || "Registration failed. Please try again.", {
+          position: "top-right",
+          autoClose: 5000,
+        });
       }
     } catch (error) {
-      setError("Network error. Please try again.");
+      toast.dismiss(loadingToast);
+      toast.error("Network error. Please check your connection and try again.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
       console.error("Signup error:", error);
     } finally {
       setLoading(false);
@@ -147,20 +246,6 @@ const SignupForm = () => {
       <div className="py-5 flex items-center justify-center">
         <h1 className="text-3xl font-bold">Signup as Admin</h1>
       </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
-          {error}
-        </div>
-      )}
-
-      {/* Success Message */}
-      {success && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md text-sm">
-          {success}
-        </div>
-      )}
 
       {/* Username Field */}
       <div className="mb-4">
@@ -208,6 +293,9 @@ const SignupForm = () => {
           className="w-full px-3 py-2.5 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 text-sm placeholder-gray-400"
           disabled={loading}
         />
+        {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+          <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+        )}
       </div>
 
       {/* Email Field */}
@@ -239,7 +327,7 @@ const SignupForm = () => {
           <button
             onClick={handleGetCode}
             disabled={codeLoading || !formData.email || loading}
-            className="px-4 py-2.5 bg-cyan-400 text-white rounded-md hover:bg-cyan-500 transition-colors text-sm font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="px-4 py-2.5 bg-cyan-400 text-white rounded-md hover:bg-cyan-500 transition-colors text-sm font-medium disabled:bg-gray-300 disabled:cursor-not-allowed min-w-[80px]"
           >
             {codeLoading ? "Sending..." : "Get"}
           </button>
@@ -262,7 +350,16 @@ const SignupForm = () => {
       {/* Login Link */}
       <div className="text-center">
         <span className="text-gray-600 text-sm">Have an account? </span>
-        <Link to="/login" className="text-cyan-400 hover:text-cyan-500 text-sm">
+        <Link 
+          to="/login" 
+          className="text-cyan-400 hover:text-cyan-500 text-sm"
+          onClick={() => {
+            toast.info("Redirecting to login...", {
+              position: "top-right",
+              autoClose: 1500,
+            });
+          }}
+        >
           Log in
         </Link>
       </div>

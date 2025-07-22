@@ -13,7 +13,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
         
         // Fetch deposits
         const depositsResponse = await axios.get("http://localhost:3006/api/deposits", {
@@ -48,7 +48,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
         
         // Fetch deposits
         const depositsResponse = await axios.get("http://localhost:3006/api/deposits", {

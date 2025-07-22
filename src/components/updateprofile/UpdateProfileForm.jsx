@@ -13,6 +13,7 @@ const UpdateProfileForm = ({ onSave, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const token = localStorage.getItem("authToken");
 
   // Fetch current user data on component mount
   useEffect(() => {
@@ -21,6 +22,7 @@ const UpdateProfileForm = ({ onSave, onCancel }) => {
         const res = await fetch(`${API_BASE}/${id}`, {
           method: "GET",
           headers: {
+            Authorization : `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
@@ -65,6 +67,7 @@ const UpdateProfileForm = ({ onSave, onCancel }) => {
       const response = await fetch(`${API_BASE}/update/${id}`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

@@ -5,23 +5,35 @@ import Dashboard from "./pages/Dashboard";
 import Deposits from "./pages/Deposits";
 import Withdrawals from "./pages/Withdrawals";
 import Users from "./pages/Users";
-import Packages from "./pages/Products";
+import Products from "./pages/Products";
 import Refferals from "./pages/Refferals";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
-import ProtectedRoute from "./assets/protectedRoute/ProtectedRoute";
-import Products from "./pages/Products";
+import ProtectedRoute from "./components/protectedRoute/ProtectedRoute"; // This should be AdminProtectedRoute
 import UpdateProfilePage from "./components/updateprofile/UpdateProfileForm";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="signup" element={<SignupPage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="/" element={<MainLayout />} />
+        {/* =============================================
+            ADMIN AUTHENTICATION ROUTES
+            ============================================= */}
+
+        {/* Admin Signup - Public */}
+        <Route path="/signup" element={<SignupPage />} />
+
+        {/* Admin Login - Public */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* =============================================
+            ADMIN PROTECTED ROUTES
+            All routes below require ADMIN authentication
+            ============================================= */}
+
+        {/* Admin Dashboard - Home */}
         <Route
-          index
+          path="/"
           element={
             <ProtectedRoute>
               <MainLayout>
@@ -30,18 +42,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* =============================================
+            DEPOSIT MANAGEMENT (Admin)
+            ============================================= */}
         <Route
-          path="deposits"
+          path="/deposits"
           element={
             <ProtectedRoute>
               <MainLayout>
                 <Deposits />
               </MainLayout>
-           </ProtectedRoute>
+            </ProtectedRoute>
           }
         />
+
+        {/* =============================================
+            WITHDRAWAL MANAGEMENT (Admin)
+            ============================================= */}
         <Route
-          path="withdrawals"
+          path="/withdrawals"
           element={
             <ProtectedRoute>
               <MainLayout>
@@ -50,8 +70,12 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* =============================================
+            USER MANAGEMENT (Admin)
+            ============================================= */}
         <Route
-          path="users"
+          path="/users"
           element={
             <ProtectedRoute>
               <MainLayout>
@@ -60,21 +84,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* =============================================
+            PRODUCT MANAGEMENT (Admin)
+            ============================================= */}
         <Route
-          path="products"
+          path="/products"
           element={
-            // <ProtectedRoute>
-            //   <MainLayout>
-            //     <Packages />
-            //   </MainLayout>
-            // </ProtectedRoute>
-            <MainLayout>
-              <Products />
-            </MainLayout>
+            <ProtectedRoute>
+              <MainLayout>
+                <Products />
+              </MainLayout>
+            </ProtectedRoute>
           }
         />
+
+        {/* =============================================
+            REFERRAL MANAGEMENT (Admin)
+            ============================================= */}
         <Route
-          path="referrals"
+          path="/referrals"
           element={
             <ProtectedRoute>
               <MainLayout>
@@ -84,12 +113,90 @@ function App() {
           }
         />
 
+        {/* =============================================
+            ADMIN PROFILE MANAGEMENT
+            ============================================= */}
         <Route
           path="/update-profile/:id"
           element={
-            <MainLayout>
-              <UpdateProfilePage />
-            </MainLayout>
+            <ProtectedRoute>
+              <MainLayout>
+                <UpdateProfilePage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* =============================================
+            ADMIN ADDITIONAL ROUTES (Optional)
+            ============================================= */}
+
+        {/* Admin Settings */}
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <div className="p-6">
+                  <h1 className="text-2xl font-bold">Admin Settings</h1>
+                  <p>System configuration and admin preferences</p>
+                </div>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Reports */}
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <div className="p-6">
+                  <h1 className="text-2xl font-bold">Admin Reports</h1>
+                  <p>Analytics and system reports</p>
+                </div>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* =============================================
+            ERROR HANDLING
+            ============================================= */}
+
+        {/* 404 Not Found */}
+        <Route
+          path="*"
+          element={
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+              <div className="text-center bg-white p-8 rounded-lg shadow-md">
+                <div className="text-6xl mb-4">🔒</div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                  Admin Panel
+                </h1>
+                <h2 className="text-xl font-semibold text-red-600 mb-4">
+                  404 - Page Not Found
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  The requested admin page does not exist.
+                </p>
+                <div className="space-x-4">
+                  <button
+                    onClick={() => (window.location.href = "/")}
+                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
+                  >
+                    Go to Admin Dashboard
+                  </button>
+                  <button
+                    onClick={() => (window.location.href = "/login")}
+                    className="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition-colors"
+                  >
+                    Admin Login
+                  </button>
+                </div>
+              </div>
+            </div>
           }
         />
       </Routes>
