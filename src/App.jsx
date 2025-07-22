@@ -33,21 +33,21 @@ function App() {
         <Route
           path="deposits"
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <MainLayout>
                 <Deposits />
               </MainLayout>
-            // </ProtectedRoute>
+           </ProtectedRoute>
           }
         />
         <Route
           path="withdrawals"
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <MainLayout>
                 <Withdrawals />
               </MainLayout>
-            // </ProtectedRoute>
+            </ProtectedRoute>
           }
         />
         <Route

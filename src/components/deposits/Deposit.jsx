@@ -9,7 +9,7 @@ const Deposit = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
   
-  const API_BASE = "http://localhost:3007/api";
+  const API_BASE = "http://localhost:3006/api";
 
   // Fetch deposits from API
   const fetchDeposits = async () => {
