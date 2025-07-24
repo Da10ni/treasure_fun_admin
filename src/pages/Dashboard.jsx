@@ -50,7 +50,6 @@ const Dashboard = () => {
         setLoading(true);
         const token = localStorage.getItem("authToken");
         
-        // Fetch deposits
         const depositsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/deposits", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,12 +58,10 @@ const Dashboard = () => {
         });
 
         if (depositsResponse.data.success) {
-          // API returns either data.deposits or directly data
           const allDeposits = depositsResponse.data.data.deposits || depositsResponse.data.data;
-          setDeposits(allDeposits.slice(0, 5)); // Just take first 5
+          setDeposits(allDeposits.slice(0, 5));
         }
 
-        // Fetch withdrawals
         const withdrawalsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/withdrawals", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,14 +70,12 @@ const Dashboard = () => {
         });
 
         if (withdrawalsResponse.data.success) {
-          // API returns either data.withdrawals or directly data
           const allWithdrawals = withdrawalsResponse.data.data.withdrawals || withdrawalsResponse.data.data;
-          setWithdrawals(allWithdrawals.slice(0, 5)); // Just take first 5
+          setWithdrawals(allWithdrawals.slice(0, 5));
         }
         
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        // If API calls fail, we can set some fallback data or keep the arrays empty
       } finally {
         setLoading(false);
       }
