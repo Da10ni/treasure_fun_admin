@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
-const API_BASE = "http://localhost:3006/api";
+const API_BASE = "https://treasure-fun-backend.vercel.app/api";
 
 const LoginForm = () => {
   const navigate = useNavigate();

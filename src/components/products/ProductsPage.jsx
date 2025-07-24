@@ -10,7 +10,7 @@ const ProductsPage = () => {
   const [actionLoading, setActionLoading] = useState(null);
   const [detailsModal, setDetailsModal] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const API_BASE = "http://localhost:3006/api";
+  const API_BASE = "https://treasure-fun-backend.vercel.app/api";
   
   const [formData, setFormData] = useState({
     title: '',

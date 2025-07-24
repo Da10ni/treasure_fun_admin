@@ -16,7 +16,7 @@ const Dashboard = () => {
         const token = localStorage.getItem("authToken");
         
         // Fetch deposits
-        const depositsResponse = await axios.get("http://localhost:3006/api/deposits", {
+        const depositsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/deposits", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const Dashboard = () => {
         const token = localStorage.getItem("authToken");
         
         // Fetch deposits
-        const depositsResponse = await axios.get("http://localhost:3006/api/deposits", {
+        const depositsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/deposits", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const Dashboard = () => {
         }
 
         // Fetch withdrawals
-        const withdrawalsResponse = await axios.get("http://localhost:3006/api/withdrawals", {
+        const withdrawalsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/withdrawals", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

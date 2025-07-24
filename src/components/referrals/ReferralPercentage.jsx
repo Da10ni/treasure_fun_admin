@@ -27,7 +27,7 @@ const ReferralPercentage = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3006/api/referrals/create-referral",
+        "https://treasure-fun-backend.vercel.app/api/referrals/create-referral",
         {
           method: "POST",
           headers: {

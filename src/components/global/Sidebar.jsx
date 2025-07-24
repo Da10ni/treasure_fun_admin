@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API_BASE = "http://localhost:3006/api";
+const API_BASE = "https://treasure-fun-backend.vercel.app/api";
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
