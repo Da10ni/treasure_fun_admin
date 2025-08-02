@@ -27,16 +27,28 @@ const Dashboard = () => {
 
         if (depositsResponse.data.success) {
           // API returns either data.deposits or directly data
-          const allDeposits = depositsResponse.data.data.deposits || depositsResponse.data.data;
+          const allDeposits =
+            depositsResponse.data.data.deposits || depositsResponse.data.data;
           setDeposits(allDeposits.slice(0, 5)); // Just take first 5
         }
 
         // Use dummy data for withdrawals as shown in your screenshot
         setWithdrawals([
-          { id: 101, user: "emma_wilson", amount: "$320.00", date: "2025-07-15", status: "completed" },
-          { id: 102, user: "david_brown", amount: "$1,500.00", date: "2025-07-14", status: "processing" }
+          {
+            id: 101,
+            user: "emma_wilson",
+            amount: "$320.00",
+            date: "2025-07-15",
+            status: "completed",
+          },
+          {
+            id: 102,
+            user: "david_brown",
+            amount: "$1,500.00",
+            date: "2025-07-14",
+            status: "processing",
+          },
         ]);
-
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -60,7 +72,8 @@ const Dashboard = () => {
         });
 
         if (depositsResponse.data.success) {
-          const allDeposits = depositsResponse.data.data.deposits || depositsResponse.data.data;
+          const allDeposits =
+            depositsResponse.data.data.deposits || depositsResponse.data.data;
           setDeposits(allDeposits.slice(0, 5));
         }
 
@@ -72,10 +85,11 @@ const Dashboard = () => {
         });
 
         if (withdrawalsResponse.data.success) {
-          const allWithdrawals = withdrawalsResponse.data.data.withdrawals || withdrawalsResponse.data.data;
+          const allWithdrawals =
+            withdrawalsResponse.data.data.withdrawals ||
+            withdrawalsResponse.data.data;
           setWithdrawals(allWithdrawals.slice(0, 5));
         }
-
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -87,7 +101,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className='p-4'>
+    <div className="p-4">
       <DashboardStats />
       <div className="w-full flex flex-col gap-6 py-5">
         {loading ? (

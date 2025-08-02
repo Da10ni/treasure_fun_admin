@@ -22,7 +22,7 @@ const UpdateProfileForm = ({ onSave, onCancel }) => {
         const res = await fetch(`${API_BASE}/${id}`, {
           method: "GET",
           headers: {
-            Authorization : `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
