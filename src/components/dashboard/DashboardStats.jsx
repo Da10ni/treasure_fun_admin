@@ -20,7 +20,7 @@ const DashboardStats = () => {
 
       try {
         const response = await axios.get(
-          "https://treasure-fun-backend.vercel.app/api/admin/getactiveuser",
+          "http://localhost:3006/api/admin/getactiveuser",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ const DashboardStats = () => {
 
       try {
         const response = await axios.get(
-          "https://treasure-fun-backend.vercel.app/api/products/allproducts",
+          "http://localhost:3006/api/products/allproducts",
           {
             headers: {
               "Content-Type": "application/json",

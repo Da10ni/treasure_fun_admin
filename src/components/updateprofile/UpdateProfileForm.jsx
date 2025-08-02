@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const API_BASE = "https://treasure-fun-backend.vercel.app/api/admin";
+const API_BASE = "http://localhost:3006/api/admin";
 
 const UpdateProfileForm = ({ onSave, onCancel }) => {
   const { id } = useParams();
@@ -22,7 +22,7 @@ const UpdateProfileForm = ({ onSave, onCancel }) => {
         const res = await fetch(`${API_BASE}/${id}`, {
           method: "GET",
           headers: {
-            Authorization : `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });

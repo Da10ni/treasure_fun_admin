@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const ReferralPercentage = () => {
   const [referralSettings, setReferralSettings] = useState({
@@ -27,7 +27,7 @@ const ReferralPercentage = () => {
 
     try {
       const response = await fetch(
-        "https://treasure-fun-backend.vercel.app/api/referrals/create-referral",
+        "http://localhost:3006/api/referrals/create-referral",
         {
           method: "POST",
           headers: {
@@ -43,21 +43,21 @@ const ReferralPercentage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        
+
         toast.success("✅ Referral settings updated successfully!", {
           position: "top-right",
           autoClose: 3000,
         });
-        
+
         console.log("API Response:", data);
       } else {
         throw new Error("Failed to update settings");
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      
+
       console.error("Error updating referral settings:", error);
-      
+
       toast.error("❌ Error updating settings. Please try again.", {
         position: "top-right",
         autoClose: 3000,

@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { Package, Plus, X, RefreshCw, Eye, Trash2, DollarSign } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import {
+  Package,
+  Plus,
+  X,
+  RefreshCw,
+  Eye,
+  Trash2,
+  DollarSign,
+} from "lucide-react";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -10,29 +18,29 @@ const ProductsPage = () => {
   const [actionLoading, setActionLoading] = useState(null);
   const [detailsModal, setDetailsModal] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const API_BASE = "https://treasure-fun-backend.vercel.app/api";
-  
+  const API_BASE = "http://localhost:3006/api";
+
   const [formData, setFormData] = useState({
-    title: '',
-    image: '',
-    status: 'active',
+    title: "",
+    image: "",
+    status: "active",
     priceRange: {
-      min: '',
-      max: ''
+      min: "",
+      max: "",
     },
-    income: '',
-    handlingFee: ''
+    income: "",
+    handlingFee: "",
   });
 
   // Reset form data
   const resetForm = () => {
     setFormData({
-      title: '',
-      image: '',
-      status: 'active',
-      priceRange: { min: '', max: '' },
-      income: '',
-      handlingFee: ''
+      title: "",
+      image: "",
+      status: "active",
+      priceRange: { min: "", max: "" },
+      income: "",
+      handlingFee: "",
     });
   };
 
@@ -43,7 +51,7 @@ const ProductsPage = () => {
       setError(null);
 
       const token = localStorage.getItem("authToken");
-      
+
       if (!token) {
         toast.error("Authentication required. Please login again.", {
           position: "top-right",
@@ -71,10 +79,10 @@ const ProductsPage = () => {
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         setProducts(data.data);
-        
+
         toast.success(`📦 Loaded ${data.data.length} products successfully`, {
           position: "top-right",
           autoClose: 2000,
@@ -84,13 +92,13 @@ const ProductsPage = () => {
       }
     } catch (err) {
       setError(err.message);
-      
+
       toast.error(`Failed to load products: ${err.message}`, {
         position: "top-right",
         autoClose: 5000,
       });
-      
-      console.error('Error fetching products:', err);
+
+      console.error("Error fetching products:", err);
     } finally {
       setLoading(false);
     }
@@ -99,7 +107,7 @@ const ProductsPage = () => {
   // Add new product
   const handleAddProduct = async (e) => {
     e.preventDefault();
-    
+
     // Client-side validation
     if (!formData.title.trim()) {
       toast.error("Product title is required", {
@@ -133,7 +141,11 @@ const ProductsPage = () => {
       return;
     }
 
-    if (!formData.income || Number(formData.income) < 0 || Number(formData.income) > 100) {
+    if (
+      !formData.income ||
+      Number(formData.income) < 0 ||
+      Number(formData.income) > 100
+    ) {
       toast.error("Income percentage must be between 0 and 100", {
         position: "top-right",
         autoClose: 3000,
@@ -143,9 +155,9 @@ const ProductsPage = () => {
 
     try {
       setSubmitLoading(true);
-      
+
       const token = localStorage.getItem("authToken");
-      
+
       if (!token) {
         toast.error("Authentication required. Please login again.", {
           position: "top-right",
@@ -158,23 +170,23 @@ const ProductsPage = () => {
       const loadingToast = toast.loading("Adding new product...", {
         position: "top-right",
       });
-      
+
       const response = await fetch(`${API_BASE}/products/addproducts`, {
-        method: 'POST',
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
           priceRange: {
             min: Number(formData.priceRange.min),
-            max: Number(formData.priceRange.max)
+            max: Number(formData.priceRange.max),
           },
-          income: Number(formData.income)
+          income: Number(formData.income),
         }),
       });
-      
+
       // Dismiss loading toast
       toast.dismiss(loadingToast);
 
@@ -190,13 +202,13 @@ const ProductsPage = () => {
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         // Refresh the products list
         await fetchProducts();
         setShowAddForm(false);
         resetForm();
-        
+
         toast.success(`✅ Product "${formData.title}" added successfully!`, {
           position: "top-right",
           autoClose: 3000,
@@ -213,7 +225,7 @@ const ProductsPage = () => {
         position: "top-right",
         autoClose: 5000,
       });
-      console.error('Error adding product:', err);
+      console.error("Error adding product:", err);
     } finally {
       setSubmitLoading(false);
     }
@@ -224,8 +236,9 @@ const ProductsPage = () => {
     // Create a custom confirmation modal
     const showConfirmModal = () => {
       return new Promise((resolve) => {
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+        const modal = document.createElement("div");
+        modal.className =
+          "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50";
         modal.innerHTML = `
           <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
             <div class="p-6">
@@ -253,8 +266,8 @@ const ProductsPage = () => {
 
         document.body.appendChild(modal);
 
-        const cancelBtn = modal.querySelector('#cancel-delete');
-        const confirmBtn = modal.querySelector('#confirm-delete');
+        const cancelBtn = modal.querySelector("#cancel-delete");
+        const confirmBtn = modal.querySelector("#confirm-delete");
 
         cancelBtn.onclick = () => {
           document.body.removeChild(modal);
@@ -273,9 +286,9 @@ const ProductsPage = () => {
 
     try {
       setActionLoading(id);
-      
+
       const token = localStorage.getItem("authToken");
-      
+
       if (!token) {
         toast.error("Authentication required. Please login again.", {
           position: "top-right",
@@ -288,15 +301,18 @@ const ProductsPage = () => {
       const loadingToast = toast.loading(`Deleting product "${title}"...`, {
         position: "top-right",
       });
-      
-      const response = await fetch(`${API_BASE}/products/delete-products/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
+
+      const response = await fetch(
+        `${API_BASE}/products/delete-products/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       // Dismiss loading toast
       toast.dismiss(loadingToast);
 
@@ -312,11 +328,11 @@ const ProductsPage = () => {
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         // Refresh the products list
         await fetchProducts();
-        
+
         toast.success(`🗑️ Product "${title}" deleted successfully!`, {
           position: "top-right",
           autoClose: 3000,
@@ -329,7 +345,7 @@ const ProductsPage = () => {
         position: "top-right",
         autoClose: 5000,
       });
-      console.error('Error deleting product:', err);
+      console.error("Error deleting product:", err);
     } finally {
       setActionLoading(null);
     }
@@ -347,19 +363,19 @@ const ProductsPage = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'minPrice' || name === 'maxPrice') {
-      setFormData(prev => ({
+
+    if (name === "minPrice" || name === "maxPrice") {
+      setFormData((prev) => ({
         ...prev,
         priceRange: {
           ...prev.priceRange,
-          [name === 'minPrice' ? 'min' : 'max']: value
-        }
+          [name === "minPrice" ? "min" : "max"]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -389,14 +405,14 @@ const ProductsPage = () => {
   // Get status color
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'inactive':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'discontinued':
-        return 'bg-red-100 text-red-800';
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "inactive":
+        return "bg-yellow-100 text-yellow-800";
+      case "discontinued":
+        return "bg-red-100 text-red-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -462,10 +478,12 @@ const ProductsPage = () => {
                 className="flex items-center gap-2 px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm transition-colors"
                 disabled={loading}
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
                 Refresh
               </button>
-              <button 
+              <button
                 onClick={handleFormToggle}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center gap-2 transition-colors"
               >
@@ -491,7 +509,10 @@ const ProductsPage = () => {
                 <Plus className="w-5 h-5" />
                 Add New Product
               </h4>
-              <form onSubmit={handleAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form
+                onSubmit={handleAddProduct}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Title <span className="text-red-500">*</span>
@@ -506,7 +527,7 @@ const ProductsPage = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Image URL <span className="text-red-500">*</span>
@@ -521,7 +542,7 @@ const ProductsPage = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status <span className="text-red-500">*</span>
@@ -538,7 +559,7 @@ const ProductsPage = () => {
                     <option value="discontinued">Discontinued</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Income Percentage <span className="text-red-500">*</span>
@@ -556,7 +577,7 @@ const ProductsPage = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Min Price <span className="text-red-500">*</span>
@@ -573,7 +594,7 @@ const ProductsPage = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Max Price <span className="text-red-500">*</span>
@@ -590,7 +611,7 @@ const ProductsPage = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Handling Fee <span className="text-red-500">*</span>
@@ -605,7 +626,7 @@ const ProductsPage = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-                
+
                 <div className="md:col-span-2 flex gap-3">
                   <button
                     type="submit"
@@ -640,14 +661,30 @@ const ProductsPage = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price Range</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Income %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Handling Fee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Image
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price Range
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Income %
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Handling Fee
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -656,7 +693,9 @@ const ProductsPage = () => {
                     <td colSpan="8" className="px-6 py-12 text-center">
                       <div className="text-gray-400">
                         <Package className="mx-auto h-12 w-12" />
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">No products found</h3>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">
+                          No products found
+                        </h3>
                         <p className="mt-1 text-sm text-gray-500">
                           Get started by adding your first product.
                         </p>
@@ -671,7 +710,10 @@ const ProductsPage = () => {
                   </tr>
                 ) : (
                   products.map((product) => (
-                    <tr key={product.id || product._id} className="hover:bg-gray-50">
+                    <tr
+                      key={product.id || product._id}
+                      className="hover:bg-gray-50"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
                         #{(product.id || product._id).slice(-6)}
                       </td>
@@ -681,7 +723,8 @@ const ProductsPage = () => {
                           alt={product.title}
                           className="h-12 w-12 rounded-lg object-cover border"
                           onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/48x48?text=No+Image';
+                            e.target.src =
+                              "https://via.placeholder.com/48x48?text=No+Image";
                             toast.warn("Failed to load product image", {
                               position: "top-right",
                               autoClose: 2000,
@@ -695,7 +738,8 @@ const ProductsPage = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex items-center gap-1">
                           <DollarSign className="w-3 h-3 text-green-600" />
-                          {formatCurrency(product.priceRange.min)} - {formatCurrency(product.priceRange.max)}
+                          {formatCurrency(product.priceRange.min)} -{" "}
+                          {formatCurrency(product.priceRange.max)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -707,25 +751,38 @@ const ProductsPage = () => {
                         {product.handlingFee}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(product.status)}`}>
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                            product.status
+                          )}`}
+                        >
                           {product.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
-                        <button 
+                        <button
                           onClick={() => handleViewDetails(product)}
                           className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition-colors flex items-center gap-1"
                         >
                           <Eye className="w-3 h-3" />
                           Details
                         </button>
-                        <button 
-                          onClick={() => handleDeleteProduct(product.id || product._id, product.title)}
-                          disabled={actionLoading === (product.id || product._id)}
+                        <button
+                          onClick={() =>
+                            handleDeleteProduct(
+                              product.id || product._id,
+                              product.title
+                            )
+                          }
+                          disabled={
+                            actionLoading === (product.id || product._id)
+                          }
                           className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                         >
                           <Trash2 className="w-3 h-3" />
-                          {actionLoading === (product.id || product._id) ? "Deleting..." : "Delete"}
+                          {actionLoading === (product.id || product._id)
+                            ? "Deleting..."
+                            : "Delete"}
                         </button>
                       </td>
                     </tr>
@@ -747,7 +804,7 @@ const ProductsPage = () => {
                   <Package className="w-5 h-5" />
                   Product Details
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setDetailsModal(null);
                     toast.info("Closed product details", {
@@ -764,49 +821,77 @@ const ProductsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Product ID</label>
-                    <p className="mt-1 text-sm text-gray-900 font-mono">#{detailsModal.id || detailsModal._id}</p>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Title</label>
-                    <p className="mt-1 text-sm text-gray-900">{detailsModal.title}</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Price Range</label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {formatCurrency(detailsModal.priceRange.min)} - {formatCurrency(detailsModal.priceRange.max)}
+                    <label className="block text-sm font-medium text-gray-700">
+                      Product ID
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900 font-mono">
+                      #{detailsModal.id || detailsModal._id}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Income Percentage</label>
-                    <p className="mt-1 text-sm text-gray-900">{detailsModal.income}%</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Title
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {detailsModal.title}
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Handling Fee</label>
-                    <p className="mt-1 text-sm text-gray-900">{detailsModal.handlingFee}</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Price Range
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {formatCurrency(detailsModal.priceRange.min)} -{" "}
+                      {formatCurrency(detailsModal.priceRange.max)}
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <span className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(detailsModal.status)}`}>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Income Percentage
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {detailsModal.income}%
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Handling Fee
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {detailsModal.handlingFee}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <span
+                      className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                        detailsModal.status
+                      )}`}
+                    >
                       {detailsModal.status}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Product Image
+                  </label>
                   <div className="border rounded-lg overflow-hidden">
-                    <img 
-                      src={detailsModal.image} 
+                    <img
+                      src={detailsModal.image}
                       alt={detailsModal.title}
                       className="w-full h-64 object-cover"
                       onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Available';
+                        e.target.src =
+                          "https://via.placeholder.com/300x200?text=Image+Not+Available";
                         toast.error("Failed to load product image", {
                           position: "top-right",
                           autoClose: 3000,
@@ -814,9 +899,9 @@ const ProductsPage = () => {
                       }}
                     />
                   </div>
-                  <a 
-                    href={detailsModal.image} 
-                    target="_blank" 
+                  <a
+                    href={detailsModal.image}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 text-sm mt-2 inline-block"
                     onClick={() => {

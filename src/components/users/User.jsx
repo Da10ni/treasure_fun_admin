@@ -1,6 +1,13 @@
-import { Search, Users, RefreshCw, User as UserIcon, Calendar, Eye } from "lucide-react";
+import {
+  Search,
+  Users,
+  RefreshCw,
+  User as UserIcon,
+  Calendar,
+  Eye,
+} from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const User = () => {
   const [users, setUsers] = useState([]);
@@ -10,18 +17,22 @@ const User = () => {
   const [detailsModal, setDetailsModal] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const API_BASE = "https://treasure-fun-backend.vercel.app/api";
+  const API_BASE = "http://localhost:3006/api";
 
   // Filter users based on search and status
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = !searchTerm || 
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      !searchTerm ||
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = !statusFilter ||
-      (statusFilter === "active" && (user.status === "active" || user.isActive)) ||
-      (statusFilter === "disabled" && (user.status === "disabled" || !user.isActive));
-    
+
+    const matchesStatus =
+      !statusFilter ||
+      (statusFilter === "active" &&
+        (user.status === "active" || user.isActive)) ||
+      (statusFilter === "disabled" &&
+        (user.status === "disabled" || !user.isActive));
+
     return matchesSearch && matchesStatus;
   });
 
@@ -64,7 +75,7 @@ const User = () => {
       if (data.success) {
         const usersData = data.data.users || data.data;
         setUsers(usersData);
-        
+
         toast.success(`👥 Loaded ${usersData.length} users successfully`, {
           position: "top-right",
           autoClose: 2000,
@@ -74,12 +85,12 @@ const User = () => {
       }
     } catch (err) {
       setError(err.message);
-      
+
       toast.error(`Failed to load users: ${err.message}`, {
         position: "top-right",
         autoClose: 5000,
       });
-      
+
       console.error("Error fetching users:", err);
     } finally {
       setLoading(false);
@@ -101,8 +112,9 @@ const User = () => {
         return;
       }
 
-      const currentUser = users.find(u => (u.id || u._id) === userId);
-      const isCurrentlyActive = currentUser?.status === "active" || currentUser?.isActive;
+      const currentUser = users.find((u) => (u.id || u._id) === userId);
+      const isCurrentlyActive =
+        currentUser?.status === "active" || currentUser?.isActive;
       const action = isCurrentlyActive ? "Disabling" : "Enabling";
 
       // Show loading toast
@@ -132,7 +144,9 @@ const User = () => {
           });
           return;
         }
-        throw new Error(`HTTP ${response.status}: Failed to toggle user status`);
+        throw new Error(
+          `HTTP ${response.status}: Failed to toggle user status`
+        );
       }
 
       const data = await response.json();
@@ -140,18 +154,21 @@ const User = () => {
       if (data.success) {
         // Refresh the users list
         await fetchUsers();
-        
+
         const newStatus = data.data.isActive ? "enabled" : "disabled";
         const statusEmoji = data.data.isActive ? "✅" : "❌";
-        
-        toast.success(`${statusEmoji} User ${username} ${newStatus} successfully!`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+
+        toast.success(
+          `${statusEmoji} User ${username} ${newStatus} successfully!`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
       } else {
         throw new Error(data.message || "Failed to toggle user status");
       }
@@ -198,17 +215,17 @@ const User = () => {
         const data = await response.json();
         if (data.success) {
           setDetailsModal(data.data);
-          
+
           toast.success("📋 User details loaded", {
             position: "top-right",
             autoClose: 1500,
           });
         } else {
           // If API doesn't support individual user fetch, use data from the list
-          const user = users.find(u => (u.id || u._id) === userId);
+          const user = users.find((u) => (u.id || u._id) === userId);
           if (user) {
             setDetailsModal(user);
-            
+
             toast.success("📋 User details loaded", {
               position: "top-right",
               autoClose: 1500,
@@ -219,10 +236,10 @@ const User = () => {
         }
       } else {
         // If API doesn't support individual user fetch, use data from the list
-        const user = users.find(u => (u.id || u._id) === userId);
+        const user = users.find((u) => (u.id || u._id) === userId);
         if (user) {
           setDetailsModal(user);
-          
+
           toast.success("📋 User details loaded", {
             position: "top-right",
             autoClose: 1500,
@@ -243,12 +260,12 @@ const User = () => {
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -335,7 +352,9 @@ const User = () => {
                 className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm transition-colors"
                 disabled={loading}
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
                 Refresh
               </button>
             </div>
@@ -399,9 +418,13 @@ const User = () => {
                     <td colSpan="7" className="px-6 py-12 text-center">
                       <div className="text-gray-400">
                         <UserIcon className="mx-auto h-12 w-12" />
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">No users found</h3>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">
+                          No users found
+                        </h3>
                         <p className="mt-1 text-sm text-gray-500">
-                          {searchTerm || statusFilter ? "Try adjusting your search or filter criteria." : "No users have been created yet."}
+                          {searchTerm || statusFilter
+                            ? "Try adjusting your search or filter criteria."
+                            : "No users have been created yet."}
                         </p>
                       </div>
                     </td>
@@ -415,7 +438,7 @@ const User = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                            {user.username?.charAt(0)?.toUpperCase() || 'U'}
+                            {user.username?.charAt(0)?.toUpperCase() || "U"}
                           </div>
                           <div className="text-sm font-medium text-gray-900">
                             {user.username}
@@ -439,7 +462,8 @@ const User = () => {
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {user.status || (user.isActive ? "active" : "disabled")}
+                          {user.status ||
+                            (user.isActive ? "active" : "disabled")}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -447,10 +471,12 @@ const User = () => {
                           <span className="text-xs text-gray-500">
                             Count:{" "}
                             {user.referralCount ||
-                              (user.referredUsers ? user.referredUsers.length : 0)}
+                              (user.referredUsers
+                                ? user.referredUsers.length
+                                : 0)}
                           </span>
                           <span className="text-xs text-gray-400 font-mono">
-                            Code: {user.myReferralCode || 'N/A'}
+                            Code: {user.myReferralCode || "N/A"}
                           </span>
                         </div>
                       </td>
@@ -466,13 +492,13 @@ const User = () => {
                               : "bg-green-500 hover:bg-green-600"
                           }`}
                         >
-                          {actionLoading === (user.id || user._id) ? (
-                            "Processing..."
-                          ) : (
-                            user.status === "active" || user.isActive ? "Disable" : "Enable"
-                          )}
+                          {actionLoading === (user.id || user._id)
+                            ? "Processing..."
+                            : user.status === "active" || user.isActive
+                            ? "Disable"
+                            : "Enable"}
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleViewDetails(user.id || user._id)}
                           className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition-colors flex items-center gap-1"
                         >
@@ -499,7 +525,7 @@ const User = () => {
                   <UserIcon className="w-5 h-5" />
                   User Details
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setDetailsModal(null);
                     toast.info("Closed user details", {
@@ -509,8 +535,18 @@ const User = () => {
                   }}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -518,80 +554,125 @@ const User = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">User ID</label>
-                    <p className="mt-1 text-sm text-gray-900 font-mono">#{detailsModal.id || detailsModal._id}</p>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Username</label>
-                    <p className="mt-1 text-sm text-gray-900">{detailsModal.username}</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <p className="mt-1 text-sm text-gray-900">{detailsModal.email}</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      User ID
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900 font-mono">
+                      #{detailsModal.id || detailsModal._id}
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <span className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      detailsModal.status === "active" || detailsModal.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}>
-                      {detailsModal.status || (detailsModal.isActive ? "active" : "disabled")}
+                    <label className="block text-sm font-medium text-gray-700">
+                      Username
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {detailsModal.username}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {detailsModal.email}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <span
+                      className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        detailsModal.status === "active" ||
+                        detailsModal.isActive
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {detailsModal.status ||
+                        (detailsModal.isActive ? "active" : "disabled")}
                     </span>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Join Date</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Join Date
+                    </label>
                     <p className="mt-1 text-sm text-gray-900">
-                      {formatDate(detailsModal.joinDate || detailsModal.createdAt)}
+                      {formatDate(
+                        detailsModal.joinDate || detailsModal.createdAt
+                      )}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Referral Code</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Referral Code
+                    </label>
                     <p className="mt-1 text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
-                      {detailsModal.myReferralCode || 'N/A'}
+                      {detailsModal.myReferralCode || "N/A"}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Referral Count</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Referral Count
+                    </label>
                     <p className="mt-1 text-sm text-gray-900">
-                      {detailsModal.referralCount || 
-                       (detailsModal.referredUsers ? detailsModal.referredUsers.length : 0)} users
+                      {detailsModal.referralCount ||
+                        (detailsModal.referredUsers
+                          ? detailsModal.referredUsers.length
+                          : 0)}{" "}
+                      users
                     </p>
                   </div>
 
                   {detailsModal.referredBy && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Referred By</label>
-                      <p className="mt-1 text-sm text-gray-900">{detailsModal.referredBy}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Referred By
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {detailsModal.referredBy}
+                      </p>
                     </div>
                   )}
 
                   {detailsModal.lastLogin && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Last Login</label>
-                      <p className="mt-1 text-sm text-gray-900">{formatDate(detailsModal.lastLogin)}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Last Login
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {formatDate(detailsModal.lastLogin)}
+                      </p>
                     </div>
                   )}
 
                   {detailsModal.totalDeposits && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Total Deposits</label>
-                      <p className="mt-1 text-sm text-gray-900">${detailsModal.totalDeposits}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Deposits
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        ${detailsModal.totalDeposits}
+                      </p>
                     </div>
                   )}
 
                   {detailsModal.totalWithdrawals && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Total Withdrawals</label>
-                      <p className="mt-1 text-sm text-gray-900">${detailsModal.totalWithdrawals}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Withdrawals
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        ${detailsModal.totalWithdrawals}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -599,9 +680,12 @@ const User = () => {
 
               {/* Actions */}
               <div className="mt-6 flex gap-3 justify-end">
-                <button 
+                <button
                   onClick={() => {
-                    toggleUserStatus(detailsModal.id || detailsModal._id, detailsModal.username);
+                    toggleUserStatus(
+                      detailsModal.id || detailsModal._id,
+                      detailsModal.username
+                    );
                     setDetailsModal(null);
                   }}
                   className={`px-4 py-2 text-white rounded transition-colors ${
@@ -610,7 +694,9 @@ const User = () => {
                       : "bg-green-500 hover:bg-green-600"
                   }`}
                 >
-                  {detailsModal.status === "active" || detailsModal.isActive ? "Disable User" : "Enable User"}
+                  {detailsModal.status === "active" || detailsModal.isActive
+                    ? "Disable User"
+                    : "Enable User"}
                 </button>
               </div>
             </div>

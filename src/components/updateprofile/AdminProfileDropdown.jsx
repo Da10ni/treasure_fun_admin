@@ -2,7 +2,7 @@ import React from "react";
 import { User, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
 
       try {
         const response = await axios.post(
-          "https://treasure-fun-backend.vercel.app/api/admin/logout",
+          "http://localhost:3006/api/admin/logout",
           {},
           {
             headers: {
@@ -37,7 +37,7 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
             withCredentials: true,
           }
         );
-        
+
         if (response.data.success) {
           // Dismiss loading toast and show success
           toast.dismiss(loadingToast);
@@ -108,14 +108,14 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
         <div className="px-4 py-3 border-b border-gray-100">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-              {user?.username?.charAt(0)?.toUpperCase() || 'A'}
+              {user?.username?.charAt(0)?.toUpperCase() || "A"}
             </div>
             <div className="ml-3">
               <div className="text-sm font-medium text-gray-900">
-                {user?.username || 'Admin'}
+                {user?.username || "Admin"}
               </div>
               <div className="text-xs text-gray-500">
-                {user?.email || 'admin@example.com'}
+                {user?.email || "admin@example.com"}
               </div>
             </div>
           </div>

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
-const API_BASE = "https://treasure-fun-backend.vercel.app/api";
+const API_BASE = "http://localhost:3006/api";
 
 // Signup Form Component
 const SignupForm = () => {
@@ -89,10 +89,13 @@ const SignupForm = () => {
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      toast.error("Network error. Please check your connection and try again.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error(
+        "Network error. Please check your connection and try again.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+        }
+      );
       console.error("Error sending verification code:", error);
     } finally {
       setCodeLoading(false);
@@ -184,14 +187,17 @@ const SignupForm = () => {
       toast.dismiss(loadingToast);
 
       if (data.success) {
-        toast.success(`🎉 Registration successful! Welcome ${data.data.user.username}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        toast.success(
+          `🎉 Registration successful! Welcome ${data.data.user.username}`,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
 
         localStorage.setItem("authToken", data.data.token);
         localStorage.setItem("user", JSON.stringify(data.data.user));
@@ -222,10 +228,13 @@ const SignupForm = () => {
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      toast.error("Network error. Please check your connection and try again.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error(
+        "Network error. Please check your connection and try again.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+        }
+      );
       console.error("Signup error:", error);
     } finally {
       setLoading(false);
@@ -293,9 +302,10 @@ const SignupForm = () => {
           className="w-full px-3 py-2.5 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 text-sm placeholder-gray-400"
           disabled={loading}
         />
-        {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-          <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
-        )}
+        {formData.confirmPassword &&
+          formData.password !== formData.confirmPassword && (
+            <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+          )}
       </div>
 
       {/* Email Field */}
@@ -350,8 +360,8 @@ const SignupForm = () => {
       {/* Login Link */}
       <div className="text-center">
         <span className="text-gray-600 text-sm">Have an account? </span>
-        <Link 
-          to="/login" 
+        <Link
+          to="/login"
           className="text-cyan-400 hover:text-cyan-500 text-sm"
           onClick={() => {
             toast.info("Redirecting to login...", {

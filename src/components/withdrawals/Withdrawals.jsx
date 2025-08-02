@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const WithdrawalsPage = () => {
   const [withdrawals, setWithdrawals] = useState([]);
@@ -14,7 +14,7 @@ const WithdrawalsPage = () => {
   const token = localStorage.getItem("authToken");
 
   // Base URL for your API
-  const API_BASE_URL = "https://treasure-fun-backend.vercel.app/api";
+  const API_BASE_URL = "http://localhost:3006/api";
 
   // Fetch all withdrawal requests (Admin view)
   const fetchWithdrawals = async (page = 1, status = "") => {
@@ -63,10 +63,13 @@ const WithdrawalsPage = () => {
         setTotalPages(data.data.pagination.totalPages);
         setCurrentPage(data.data.pagination.currentPage);
 
-        toast.success(`💰 Loaded ${data.data.withdrawals.length} withdrawal requests`, {
-          position: "top-right",
-          autoClose: 2000,
-        });
+        toast.success(
+          `💰 Loaded ${data.data.withdrawals.length} withdrawal requests`,
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
       } else {
         throw new Error(data.message || "Failed to fetch withdrawals");
       }
@@ -119,7 +122,7 @@ const WithdrawalsPage = () => {
       if (data.success) {
         // Refresh the list
         await fetchWithdrawals(currentPage, statusFilter);
-        
+
         toast.success("✅ Withdrawal approved successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -147,8 +150,9 @@ const WithdrawalsPage = () => {
     // Create a custom rejection modal
     const showRejectModal = () => {
       return new Promise((resolve) => {
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-100';
+        const modal = document.createElement("div");
+        modal.className =
+          "fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-100";
         modal.innerHTML = `
           <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
             <div class="p-6">
@@ -170,9 +174,9 @@ const WithdrawalsPage = () => {
 
         document.body.appendChild(modal);
 
-        const cancelBtn = modal.querySelector('#cancel-reject');
-        const confirmBtn = modal.querySelector('#confirm-reject');
-        const reasonInput = modal.querySelector('#reject-reason');
+        const cancelBtn = modal.querySelector("#cancel-reject");
+        const confirmBtn = modal.querySelector("#confirm-reject");
+        const reasonInput = modal.querySelector("#reject-reason");
 
         cancelBtn.onclick = () => {
           document.body.removeChild(modal);
@@ -242,7 +246,7 @@ const WithdrawalsPage = () => {
       if (data.success) {
         // Refresh the list
         await fetchWithdrawals(currentPage, statusFilter);
-        
+
         toast.success("❌ Withdrawal rejected successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -294,7 +298,7 @@ const WithdrawalsPage = () => {
 
       if (data.success) {
         setDetailsModal(data.data);
-        
+
         toast.success("📄 Withdrawal details loaded", {
           position: "top-right",
           autoClose: 1500,
@@ -326,13 +330,13 @@ const WithdrawalsPage = () => {
   const handleStatusFilterChange = (status) => {
     setStatusFilter(status);
     setCurrentPage(1);
-    
+
     const filterText = status ? `"${status}"` : "all";
     toast.info(`Filtering by ${filterText} status...`, {
       position: "top-right",
       autoClose: 1500,
     });
-    
+
     fetchWithdrawals(1, status);
   };
 
@@ -343,12 +347,12 @@ const WithdrawalsPage = () => {
 
   // Format date
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -454,10 +458,22 @@ const WithdrawalsPage = () => {
                 <tr>
                   <td colSpan="7" className="px-6 py-12 text-center">
                     <div className="text-gray-400">
-                      <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                      <svg
+                        className="mx-auto h-12 w-12"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                        />
                       </svg>
-                      <h3 className="mt-2 text-sm font-medium text-gray-900">No withdrawals found</h3>
+                      <h3 className="mt-2 text-sm font-medium text-gray-900">
+                        No withdrawals found
+                      </h3>
                       <p className="mt-1 text-sm text-gray-500">
                         No withdrawal requests match your current filter.
                       </p>
@@ -473,10 +489,10 @@ const WithdrawalsPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="font-medium text-gray-900">
-                          {withdrawal.userId?.name || 'Unknown User'}
+                          {withdrawal.userId?.name || "Unknown User"}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {withdrawal.userId?.email || 'No email'}
+                          {withdrawal.userId?.email || "No email"}
                         </div>
                       </div>
                     </td>
@@ -513,14 +529,18 @@ const WithdrawalsPage = () => {
                             disabled={actionLoading === withdrawal._id}
                             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {actionLoading === withdrawal._id ? "Processing..." : "Approve"}
+                            {actionLoading === withdrawal._id
+                              ? "Processing..."
+                              : "Approve"}
                           </button>
                           <button
                             onClick={() => handleReject(withdrawal._id)}
                             disabled={actionLoading === withdrawal._id}
                             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {actionLoading === withdrawal._id ? "Processing..." : "Reject"}
+                            {actionLoading === withdrawal._id
+                              ? "Processing..."
+                              : "Reject"}
                           </button>
                         </>
                       )}
@@ -542,7 +562,8 @@ const WithdrawalsPage = () => {
         {totalPages > 1 && (
           <div className="p-4 border-t border-gray-200 flex justify-between items-center">
             <div className="text-sm text-gray-500">
-              Showing page {currentPage} of {totalPages} • {pagination.totalItems || 0} total entries
+              Showing page {currentPage} of {totalPages} •{" "}
+              {pagination.totalItems || 0} total entries
             </div>
             <div className="flex gap-2">
               <button
@@ -557,7 +578,7 @@ const WithdrawalsPage = () => {
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 const pageNum = Math.max(1, currentPage - 2) + i;
                 if (pageNum > totalPages) return null;
-                
+
                 return (
                   <button
                     key={pageNum}
@@ -592,7 +613,7 @@ const WithdrawalsPage = () => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold">Withdrawal Details</h3>
-                <button 
+                <button
                   onClick={() => {
                     setDetailsModal(null);
                     toast.info("Closed withdrawal details", {
@@ -602,8 +623,18 @@ const WithdrawalsPage = () => {
                   }}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -611,93 +642,152 @@ const WithdrawalsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Withdrawal ID</label>
-                    <p className="mt-1 text-sm text-gray-900 font-mono">#{detailsModal._id}</p>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">User Information</label>
-                    <p className="mt-1 text-sm text-gray-900">{detailsModal.userId?.name || 'Unknown'}</p>
-                    <p className="text-sm text-gray-500">{detailsModal.userId?.email || 'No email'}</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Withdrawal ID
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900 font-mono">
+                      #{detailsModal._id}
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Amount</label>
-                    <p className="mt-1 text-lg font-semibold text-green-600">{formatCurrency(detailsModal.amount)}</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      User Information
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {detailsModal.userId?.name || "Unknown"}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {detailsModal.userId?.email || "No email"}
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Wallet Address</label>
-                    <p className="mt-1 text-sm text-gray-900 font-mono break-all">{detailsModal.walletId || 'N/A'}</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Amount
+                    </label>
+                    <p className="mt-1 text-lg font-semibold text-green-600">
+                      {formatCurrency(detailsModal.amount)}
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <span className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      detailsModal.status === "completed"
-                        ? "bg-green-100 text-green-800"
-                        : detailsModal.status === "rejected"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}>
-                      {detailsModal.status.charAt(0).toUpperCase() + detailsModal.status.slice(1)}
+                    <label className="block text-sm font-medium text-gray-700">
+                      Wallet Address
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900 font-mono break-all">
+                      {detailsModal.walletId || "N/A"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <span
+                      className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        detailsModal.status === "completed"
+                          ? "bg-green-100 text-green-800"
+                          : detailsModal.status === "rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {detailsModal.status.charAt(0).toUpperCase() +
+                        detailsModal.status.slice(1)}
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Request Date</label>
-                    <p className="mt-1 text-sm text-gray-900">{formatDate(detailsModal.requestDate)}</p>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Request Date
+                    </label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {formatDate(detailsModal.requestDate)}
+                    </p>
                   </div>
 
                   {detailsModal.processedDate && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Processed Date</label>
-                      <p className="mt-1 text-sm text-gray-900">{formatDate(detailsModal.processedDate)}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Processed Date
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {formatDate(detailsModal.processedDate)}
+                      </p>
                     </div>
                   )}
 
                   {detailsModal.rejectionReason && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Rejection Reason</label>
-                      <p className="mt-1 text-sm text-red-600 bg-red-50 p-3 rounded-md">{detailsModal.rejectionReason}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Rejection Reason
+                      </label>
+                      <p className="mt-1 text-sm text-red-600 bg-red-50 p-3 rounded-md">
+                        {detailsModal.rejectionReason}
+                      </p>
                     </div>
                   )}
 
                   {detailsModal.notes && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Notes</label>
-                      <p className="mt-1 text-sm text-gray-900 bg-gray-50 p-3 rounded-md">{detailsModal.notes}</p>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Notes
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900 bg-gray-50 p-3 rounded-md">
+                        {detailsModal.notes}
+                      </p>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Actions */}
-              {detailsModal.status === 'processing' && (
+              {detailsModal.status === "processing" && (
                 <div className="mt-6 flex gap-3 justify-end">
-                  <button 
+                  <button
                     onClick={() => {
                       handleReject(detailsModal._id);
                       setDetailsModal(null);
                     }}
                     className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                     Reject
                   </button>
-                  <button 
+                  <button
                     onClick={() => {
                       handleApprove(detailsModal._id);
                       setDetailsModal(null);
                     }}
                     className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center gap-2"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     Approve
                   </button>
