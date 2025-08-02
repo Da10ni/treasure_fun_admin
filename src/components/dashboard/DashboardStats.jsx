@@ -10,6 +10,8 @@ const DashboardStats = () => {
 
   const token = localStorage.getItem("authToken");
 
+  const baseUrl = `${import.meta.env.VITE_BASE_URL}`
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!token) {
@@ -20,7 +22,7 @@ const DashboardStats = () => {
 
       try {
         const response = await axios.get(
-          "https://treasure-fun-backend.vercel.app/api/admin/getactiveuser",
+          `${baseUrl}/admin/getactiveuser`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -60,7 +62,7 @@ const DashboardStats = () => {
 
       try {
         const response = await axios.get(
-          "https://treasure-fun-backend.vercel.app/api/products/allproducts",
+          `${baseUrl}/products/allproducts`,
           {
             headers: {
               "Content-Type": "application/json",

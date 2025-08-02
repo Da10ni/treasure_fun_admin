@@ -27,7 +27,7 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
 
       try {
         const response = await axios.post(
-          "https://treasure-fun-backend.vercel.app/api/admin/logout",
+          `${baseUrl}/api/admin/logout`,
           {},
           {
             headers: {

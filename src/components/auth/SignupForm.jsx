@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
-const API_BASE = "https://treasure-fun-backend.vercel.app/api";
+const API_BASE = `${import.meta.env.VITE_BASE_URL}`;
 
 // Signup Form Component
 const SignupForm = () => {

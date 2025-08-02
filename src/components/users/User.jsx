@@ -10,7 +10,7 @@ const User = () => {
   const [detailsModal, setDetailsModal] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const API_BASE = "https://treasure-fun-backend.vercel.app/api";
+  const API_BASE = `${import.meta.env.VITE_BASE_URL}`;
 
   // Filter users based on search and status
   const filteredUsers = users.filter(user => {

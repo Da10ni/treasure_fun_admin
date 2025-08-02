@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const API_BASE = "https://treasure-fun-backend.vercel.app/api/admin";
+const API_BASE = `${import.meta.env.VITE_BASE_URL}`;
 
 const UpdateProfileForm = ({ onSave, onCancel }) => {
   const { id } = useParams();

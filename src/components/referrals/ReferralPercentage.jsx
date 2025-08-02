@@ -6,6 +6,8 @@ const ReferralPercentage = () => {
     percentage: 5,
   });
 
+  const baseUrl = `${import.meta.env.VITE_BASE_URL}`
+
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (plan, value) => {
@@ -27,7 +29,7 @@ const ReferralPercentage = () => {
 
     try {
       const response = await fetch(
-        "https://treasure-fun-backend.vercel.app/api/referrals/create-referral",
+        `${baseUrl}/referrals/create-referral`,
         {
           method: "POST",
           headers: {
@@ -43,21 +45,21 @@ const ReferralPercentage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        
+
         toast.success("✅ Referral settings updated successfully!", {
           position: "top-right",
           autoClose: 3000,
         });
-        
+
         console.log("API Response:", data);
       } else {
         throw new Error("Failed to update settings");
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      
+
       console.error("Error updating referral settings:", error);
-      
+
       toast.error("❌ Error updating settings. Please try again.", {
         position: "top-right",
         autoClose: 3000,

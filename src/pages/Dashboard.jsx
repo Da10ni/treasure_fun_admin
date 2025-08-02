@@ -6,7 +6,9 @@ import axios from "axios";
 const Dashboard = () => {
   const [deposits, setDeposits] = useState([]);
   const [withdrawals, setWithdrawals] = useState([]);
-  
+
+  const baseUrl = `${import.meta.env.VITE_BASE_URL}`
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,9 +16,9 @@ const Dashboard = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("authToken");
-        
+
         // Fetch deposits
-        const depositsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/deposits", {
+        const depositsResponse = await axios.get(`${baseUrl}/deposits`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -34,7 +36,7 @@ const Dashboard = () => {
           { id: 101, user: "emma_wilson", amount: "$320.00", date: "2025-07-15", status: "completed" },
           { id: 102, user: "david_brown", amount: "$1,500.00", date: "2025-07-14", status: "processing" }
         ]);
-        
+
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -49,8 +51,8 @@ const Dashboard = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("authToken");
-        
-        const depositsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/deposits", {
+
+        const depositsResponse = await axios.get(`${baseUrl}/deposits`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -62,7 +64,7 @@ const Dashboard = () => {
           setDeposits(allDeposits.slice(0, 5));
         }
 
-        const withdrawalsResponse = await axios.get("https://treasure-fun-backend.vercel.app/api/withdrawals", {
+        const withdrawalsResponse = await axios.get(`${baseUrl}/withdrawals`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -73,7 +75,7 @@ const Dashboard = () => {
           const allWithdrawals = withdrawalsResponse.data.data.withdrawals || withdrawalsResponse.data.data;
           setWithdrawals(allWithdrawals.slice(0, 5));
         }
-        
+
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -83,7 +85,7 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
-  
+
   return (
     <div className='p-4'>
       <DashboardStats />

@@ -14,7 +14,7 @@ const WithdrawalsPage = () => {
   const token = localStorage.getItem("authToken");
 
   // Base URL for your API
-  const API_BASE_URL = "https://treasure-fun-backend.vercel.app/api";
+  const API_BASE_URL = `${import.meta.env.VITE_BASE_URL}`;
 
   // Fetch all withdrawal requests (Admin view)
   const fetchWithdrawals = async (page = 1, status = "") => {
