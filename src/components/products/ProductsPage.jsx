@@ -5,7 +5,7 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const API_BASE = "http://localhost:3007/api";
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
   const [formData, setFormData] = useState({
     title: '',
     image: '',

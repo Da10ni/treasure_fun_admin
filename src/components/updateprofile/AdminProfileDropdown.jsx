@@ -5,6 +5,7 @@ import axios from "axios"; // Make sure axios is installed
 
 function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
   const navigate = useNavigate();
+  const api_base = import.meta.env.VITE_API_BASE_URL
 
   const handleOption = async (option) => {
     if (option === "Update Profile") {
@@ -15,7 +16,7 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
 
       try {
         const response = await axios.post(
-          "http://localhost:3006/api/admin/logout",
+          `${api_base}/admin/logout`,
           {},
           { withCredentials: true }
         );

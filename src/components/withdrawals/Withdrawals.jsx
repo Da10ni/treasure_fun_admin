@@ -10,7 +10,7 @@ const WithdrawalsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
   
   // Base URL for your API
-  const API_BASE_URL = 'http://localhost:3007/api'; // Adjust according to your backend URL
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Adjust according to your backend URL
 
   // Fetch all withdrawal requests (Admin view)
   const fetchWithdrawals = async (page = 1, status = '') => {

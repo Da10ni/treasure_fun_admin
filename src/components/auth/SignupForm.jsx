@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-const API_BASE = "http://localhost:3006/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // Signup Form Component
 const SignupForm = () => {

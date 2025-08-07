@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const API_BASE = "http://localhost:3006/api/admin";
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/admin`;
 
 const UpdateProfileForm = ({ onSave, onCancel }) => {
   const { id } = useParams();
