@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,9 +19,8 @@ const LoginForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [codeLoading, setCodeLoading] = useState(false);
+  const token = localStorage.getItem("authToken");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,18 +28,37 @@ const LoginForm = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
-    if (error) setError("");
   };
 
   const handleGetCode = async () => {
     if (!formData.email) {
-      setError("Please enter your email first");
+      toast.error("Please enter your email first", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
     setCodeLoading(true);
-    setError("");
+
+    // Show loading toast
+    const loadingToast = toast.loading("Sending verification code...", {
+      position: "top-right",
+    });
 
     try {
       const response = await fetch(`${API_BASE}/auth/generate-code`, {
@@ -54,14 +73,30 @@ const LoginForm = () => {
 
       const data = await response.json();
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+
       if (data.success) {
-        setSuccess("Verification code sent to your email!");
-        setTimeout(() => setSuccess(""), 5000);
+        toast.success("📧 Verification code sent to your email!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
-        setError(data.message || "Failed to send verification code");
+        toast.error(data.message || "Failed to send verification code", {
+          position: "top-right",
+          autoClose: 5000,
+        });
       }
     } catch (error) {
-      setError("Network error. Please try again.");
+      toast.dismiss(loadingToast);
+      toast.error("Network error. Please check your connection and try again.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
       console.error("Error sending verification code:", error);
     } finally {
       setCodeLoading(false);
@@ -71,13 +106,47 @@ const LoginForm = () => {
   const handleLogin = async () => {
     // Client-side validation
     if (!formData.email || !formData.password || !formData.emailCode) {
-      setError("All fields are required!");
+      toast.error("All fields are required!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Password validation
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Email code validation
+    if (formData.emailCode.length < 4) {
+      toast.error("Please enter a valid verification code", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
     setLoading(true);
-    setError("");
-    setSuccess("");
+
+    // Show loading toast
+    const loadingToast = toast.loading("Logging you in...", {
+      position: "top-right",
+    });
 
     try {
       const response = await fetch(`${API_BASE}/admin/login`, {
@@ -94,13 +163,23 @@ const LoginForm = () => {
 
       const data = await response.json();
 
-      if (data.success) {
-        setSuccess(data.message || "Login successful!");
-        navigate("/");
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
 
-        // Store token in localStorage (or handle as needed)
+      if (data.success) {
+        // Store token in localStorage
         localStorage.setItem("authToken", data.data.token);
         localStorage.setItem("user", JSON.stringify(data.data.user));
+
+        // Show success toast
+        toast.success(`🎉 Welcome back, ${data.data.user.username || 'Admin'}!`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
 
         // Reset form
         setFormData({
@@ -113,16 +192,57 @@ const LoginForm = () => {
           referralCode: "",
         });
 
-        // Redirect to dashboard or handle successful login
+        // Show redirect toast
+        toast.info("Redirecting to dashboard...", {
+          position: "top-right",
+          autoClose: 1500,
+        });
+
+        // Redirect to dashboard
         setTimeout(() => {
-          // window.location.href = "/dashboard"; // or use router navigation
-          // You can also use useNavigate hook from react-router-dom
+          navigate("/");
         }, 1500);
       } else {
-        setError(data.message || "Login failed");
+        // Handle specific error messages
+        const errorMessage = data.message || "Login failed";
+        
+        if (errorMessage.toLowerCase().includes('invalid')) {
+          toast.error("❌ Invalid credentials. Please check your email and password.", {
+            position: "top-right",
+            autoClose: 5000,
+          });
+        } else if (errorMessage.toLowerCase().includes('verification')) {
+          toast.error("❌ Invalid verification code. Please request a new code.", {
+            position: "top-right",
+            autoClose: 5000,
+          });
+        } else if (errorMessage.toLowerCase().includes('expired')) {
+          toast.error("❌ Verification code has expired. Please request a new code.", {
+            position: "top-right",
+            autoClose: 5000,
+          });
+        } else {
+          toast.error(errorMessage, {
+            position: "top-right",
+            autoClose: 5000,
+          });
+        }
       }
     } catch (error) {
-      setError("Network error. Please try again.");
+      toast.dismiss(loadingToast);
+      
+      // Handle network errors
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        toast.error("❌ Unable to connect to server. Please check your internet connection.", {
+          position: "top-right",
+          autoClose: 5000,
+        });
+      } else {
+        toast.error("❌ Network error. Please try again.", {
+          position: "top-right",
+          autoClose: 5000,
+        });
+      }
       console.error("Login error:", error);
     } finally {
       setLoading(false);
@@ -138,20 +258,6 @@ const LoginForm = () => {
         <h1 className="text-3xl font-bold">Login as Admin</h1>
       </div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
-          {error}
-        </div>
-      )}
-
-      {/* Success Message */}
-      {success && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md text-sm">
-          {success}
-        </div>
-      )}
-
       {/* Password Field */}
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-2">
@@ -166,6 +272,9 @@ const LoginForm = () => {
           className="w-full px-3 py-2.5 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 text-sm placeholder-gray-400"
           disabled={loading}
         />
+        {formData.password && formData.password.length < 6 && (
+          <p className="text-orange-500 text-xs mt-1">Password should be at least 6 characters</p>
+        )}
       </div>
 
       {/* Email Field */}
@@ -197,7 +306,7 @@ const LoginForm = () => {
           <button
             onClick={handleGetCode}
             disabled={codeLoading || !formData.email || loading}
-            className="px-4 py-2.5 bg-cyan-400 text-white rounded-md hover:bg-cyan-500 transition-colors text-sm font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="px-4 py-2.5 bg-cyan-400 text-white rounded-md hover:bg-cyan-500 transition-colors text-sm font-medium disabled:bg-gray-300 disabled:cursor-not-allowed min-w-[80px]"
           >
             {codeLoading ? "Sending..." : "Get"}
           </button>
@@ -223,9 +332,26 @@ const LoginForm = () => {
         <Link
           to="/signup"
           className="text-cyan-400 hover:text-cyan-500 text-sm"
+          onClick={() => {
+            toast.info("Redirecting to signup...", {
+              position: "top-right",
+              autoClose: 1500,
+            });
+          }}
         >
           Signup
         </Link>
+      </div>
+
+      {/* Additional Help */}
+      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+        <h3 className="text-sm font-medium text-blue-800 mb-2">Need help?</h3>
+        <ul className="text-xs text-blue-600 space-y-1">
+          <li>• Make sure you enter a valid email address</li>
+          <li>• Request a new verification code if the current one expired</li>
+          <li>• Check your spam folder for the verification email</li>
+          <li>• Contact support if you continue having issues</li>
+        </ul>
       </div>
     </div>
   );
