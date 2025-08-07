@@ -3,6 +3,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Gift,
+  ImageIcon,
   LogOut,
   Menu,
   PackageCheck,
@@ -168,6 +169,18 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
             >
               <Gift size={20} />
               {sidebarOpen && <span className="ml-3">Referral Settings</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              to={"/images"}
+              onClick={() => setActiveTab("images")}
+              className={`flex items-center w-full p-2 rounded-md hover:bg-indigo-200 transition-colors ${
+                activeTab === "images" ? "bg-white text-red" : ""
+              }`}
+            >
+              <ImageIcon size={20} />
+              {sidebarOpen && <span className="ml-3">Hero Image</span>}
             </Link>
           </li>
         </ul>

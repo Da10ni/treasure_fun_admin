@@ -7,10 +7,10 @@ import Withdrawals from "./pages/Withdrawals";
 import Users from "./pages/Users";
 import Products from "./pages/Products";
 import Refferals from "./pages/Refferals";
-import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute"; // This should be AdminProtectedRoute
 import UpdateProfilePage from "./components/updateprofile/UpdateProfileForm";
+import HeroImage from "./pages/HeroImage";
 
 function App() {
   return (
@@ -19,9 +19,6 @@ function App() {
         {/* =============================================
             ADMIN AUTHENTICATION ROUTES
             ============================================= */}
-
-        {/* Admin Signup - Public */}
-        <Route path="/signup" element={<SignupPage />} />
 
         {/* Admin Login - Public */}
         <Route path="/login" element={<LoginPage />} />
@@ -108,6 +105,20 @@ function App() {
             <ProtectedRoute>
               <MainLayout>
                 <Refferals />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* =============================================
+            HERO IMAGE (Admin)
+            ============================================= */}
+        <Route
+          path="/images"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <HeroImage />
               </MainLayout>
             </ProtectedRoute>
           }
