@@ -21,7 +21,6 @@ const Deposit = () => {
   
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-  // Fetch deposits from API
   const fetchDeposits = async () => {
     try {
       setLoading(true);
@@ -77,7 +76,6 @@ const Deposit = () => {
     }
   };
 
-  // Handle approve deposit
   const handleApprove = async (depositId) => {
     try {
       setActionLoading(depositId);
