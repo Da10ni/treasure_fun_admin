@@ -81,11 +81,6 @@ const ProductsPage = () => {
 
       if (data.success) {
         setProducts(data.data);
-
-        toast.success(`📦 Loaded ${data.data.length} products successfully`, {
-          position: "top-right",
-          autoClose: 2000,
-        });
       } else {
         throw new Error(data.message || "Failed to fetch products");
       }

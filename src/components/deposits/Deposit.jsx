@@ -60,14 +60,6 @@ const Deposit = () => {
       if (data.success) {
         const depositsData = data.data.deposits || data.data;
         setDeposits(depositsData);
-
-        toast.success(
-          `📊 Loaded ${depositsData.length} deposits successfully`,
-          {
-            position: "top-right",
-            autoClose: 2000,
-          }
-        );
       } else {
         throw new Error(data.message || "Failed to fetch deposits");
       }

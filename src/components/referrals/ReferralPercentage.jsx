@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 const ReferralPercentage = () => {
@@ -6,9 +6,56 @@ const ReferralPercentage = () => {
     percentage: 5,
   });
 
-  const baseUrl = `${import.meta.env.VITE_API_BASE_URL}`
-
+  const baseUrl = `${import.meta.env.VITE_API_BASE_URL}`;
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
+
+  // Fetch existing referral settings on component mount
+  const fetchReferralSettings = async () => {
+    const token = localStorage.getItem("authToken");
+    
+    try {
+      const response = await fetch(
+        `${baseUrl}/referrals/get-referral`, 
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        // Update state with fetched percentage
+        if (result.success && result.data && result.data.percentage !== undefined) {
+          setReferralSettings((prev) => ({
+            ...prev,
+            percentage: result.data.percentage,
+          }));
+        }
+        
+        console.log("Fetched referral settings:", result);
+      } else {
+        console.error("Failed to fetch referral settings");
+      }
+    } catch (error) {
+      console.error("Error fetching referral settings:", error);
+      toast.error("❌ Error loading referral settings", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } finally {
+      setFetchLoading(false);
+    }
+  };
+
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetchReferralSettings();
+  }, []);
 
   const handleInputChange = (plan, value) => {
     setReferralSettings((prev) => ({
@@ -52,6 +99,14 @@ const ReferralPercentage = () => {
         });
 
         console.log("API Response:", data);
+        
+        // Update local state with response data (percentage comes in data object)
+        if (data && data.data && data.data.percentage !== undefined) {
+          setReferralSettings((prev) => ({
+            ...prev,
+            percentage: data.data.percentage,
+          }));
+        }
       } else {
         throw new Error("Failed to update settings");
       }
@@ -68,6 +123,20 @@ const ReferralPercentage = () => {
       setLoading(false);
     }
   };
+
+  // Show loading spinner while fetching initial data
+  if (fetchLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="p-6 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
+            <p className="mt-2 text-gray-500">Loading referral settings...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

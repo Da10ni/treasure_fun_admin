@@ -75,11 +75,6 @@ const User = () => {
       if (data.success) {
         const usersData = data.data.users || data.data;
         setUsers(usersData);
-
-        toast.success(`👥 Loaded ${usersData.length} users successfully`, {
-          position: "top-right",
-          autoClose: 2000,
-        });
       } else {
         throw new Error(data.message || "Failed to fetch users");
       }

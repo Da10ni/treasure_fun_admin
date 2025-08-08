@@ -62,14 +62,6 @@ const WithdrawalsPage = () => {
         setPagination(data.data.pagination);
         setTotalPages(data.data.pagination.totalPages);
         setCurrentPage(data.data.pagination.currentPage);
-
-        toast.success(
-          `💰 Loaded ${data.data.withdrawals.length} withdrawal requests`,
-          {
-            position: "top-right",
-            autoClose: 2000,
-          }
-        );
       } else {
         throw new Error(data.message || "Failed to fetch withdrawals");
       }
