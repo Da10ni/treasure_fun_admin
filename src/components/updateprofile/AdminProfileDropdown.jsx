@@ -20,87 +20,88 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
       });
       navigate("/update-profile");
     } else if (option === "Logout") {
-      // Show loading toast
-      const loadingToast = toast.loading("Logging out...", {
-        position: "top-right",
+      await handleLogout(); // Centralized logout
+    }
+  
+    onClose(); // close dropdown
+  };
+  
+  const handleLogout = async () => {
+  
+    // Show loading toast
+    const loadingToast = toast.loading("Logging out...", {
+      position: "top-right",
+    });
+  
+    try {
+      const token = localStorage.getItem("authToken");
+  
+      const response = await fetch(`${api_base}/admin/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
       });
-
-      try {
-        const response = await axios.post(
-          `${api_base}/admin/logout`,
-          {},
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-            withCredentials: true,
-          }
-        );
-
-        if (response.data.success) {
-          // Dismiss loading toast and show success
-          toast.dismiss(loadingToast);
-          toast.success("Logged out successfully! 👋", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-
-          // Clear localStorage/session
-          localStorage.removeItem("user");
-          localStorage.removeItem("authToken");
-          console.log("Logged out successfully");
-
-          // Redirect after a short delay to show toast
-          setTimeout(() => {
-            navigate("/login");
-          }, 1000);
-        } else {
-          toast.dismiss(loadingToast);
-          toast.error(response.data.message || "Logout failed!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-          console.error("Logout failed:", response.data.message);
-        }
-      } catch (error) {
-        toast.dismiss(loadingToast);
-        toast.error("Logout failed! Please try again.", {
+  
+      const data = await response.json();
+  
+      // Dismiss loading
+      toast.dismiss(loadingToast);
+  
+      if (data.success) {
+        toast.success("Logged out successfully! 👋", {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
         });
-        console.error("Logout error:", error.message);
+  
+        // Clear storage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("adminData");
+  
+        setActiveTab && setActiveTab("dashboard");
+  
+        console.log("Logout successful");
+  
+        // Delay for toast then navigate
+        setTimeout(() => {
+          navigate("/login");
+        }, 1000);
+      } else {
+        toast.error(data.message || "Logout failed!", {
+          position: "top-right",
+          autoClose: 5000,
+        });
+  
+        console.error("Logout API failed:", data.message);
+        navigate("/login"); // still redirect
       }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+  
+      toast.error("Logout failed! Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+  
+      console.error("Logout error:", error.message);
+      navigate("/login"); // still redirect
+    } finally {
+      setIsLoggingOut(false);
     }
-
-    onClose(); // close the dropdown regardless of what was clicked
   };
+  
 
   if (!isOpen) return null;
 
   const userString = localStorage.getItem("user");
   const user = userString ? JSON.parse(userString) : null;
-
-  // Handle case when user data is not available
-  if (!user) {
-    toast.error("User data not found. Please login again.", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-    return null;
-  }
 
   return (
     <>
