@@ -28,8 +28,6 @@ const ReferralPercentage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        
-        // Update state with fetched percentage
         if (result.success && result.data && result.data.percentage !== undefined) {
           setReferralSettings((prev) => ({
             ...prev,
@@ -52,7 +50,6 @@ const ReferralPercentage = () => {
     }
   };
 
-  // Fetch data when component mounts
   useEffect(() => {
     fetchReferralSettings();
   }, []);
@@ -69,7 +66,6 @@ const ReferralPercentage = () => {
 
     const token = localStorage.getItem("authToken");
 
-    // Show loading toast
     const loadingToast = toast.loading("Saving referral settings...", {
       position: "top-right",
     });
