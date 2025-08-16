@@ -359,15 +359,6 @@ export default function Notification() {
                   </>
                 )}
               </button>
-              
-              <button
-                type="button"
-                onClick={handleReset}
-                disabled={loading}
-                className="sm:w-auto bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                Reset Form
-              </button>
             </div>
           </div>
         </div>
