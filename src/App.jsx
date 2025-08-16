@@ -8,9 +8,11 @@ import Users from "./pages/Users";
 import Products from "./pages/Products";
 import Refferals from "./pages/Refferals";
 import LoginPage from "./pages/LoginPage";
+// import Notification from './pages/Notification'
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute"; // This should be AdminProtectedRoute
 import UpdateProfilePage from "./components/updateprofile/UpdateProfileForm";
 import HeroImage from "./pages/HeroImage";
+import Notification from "./pages/notification";
 
 function App() {
   return (
@@ -110,6 +112,16 @@ function App() {
           }
         />
 
+        <Route
+          path="/Notification"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Notification />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
         {/* =============================================
             HERO IMAGE (Admin)
             ============================================= */}

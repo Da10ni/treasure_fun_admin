@@ -183,6 +183,19 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
               {sidebarOpen && <span className="ml-3">Hero Image</span>}
             </Link>
           </li>
+
+          <li>
+            <Link
+              to={"/Notification "}
+              onClick={() => setActiveTab("Notification")}
+              className={`flex items-center w-full p-2 rounded-md hover:bg-indigo-200 transition-colors ${
+                activeTab === "images" ? "bg-white text-red" : ""
+              }`}
+            >
+              <ImageIcon size={20} />
+              {sidebarOpen && <span className="ml-3">Notfication</span>}
+            </Link>
+          </li>
         </ul>
       </nav>
 
