@@ -31,7 +31,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include token if your backend requires it
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -180,7 +180,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
               }`}
             >
               <ImageIcon size={20} />
-              {sidebarOpen && <span className="ml-3">Hero Image</span>}
+              {sidebarOpen && <span className="ml-3">Image / Video</span>}
             </Link>
           </li>
 
