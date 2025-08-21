@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import AdminImageUploadComponent from "../withdrawalInputs/WithdrawalInputs";
 
 const WithdrawalsPage = () => {
   const [withdrawals, setWithdrawals] = useState([]);

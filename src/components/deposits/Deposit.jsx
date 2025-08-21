@@ -10,6 +10,7 @@ import {
   Package,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import AdminImageUploadComponent from "../withdrawalInputs/WithdrawalInputs";
 
 const Deposit = () => {
   const [deposits, setDeposits] = useState([]);
@@ -18,7 +19,7 @@ const Deposit = () => {
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
-  
+
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   const fetchDeposits = async () => {
@@ -348,6 +349,7 @@ const Deposit = () => {
   return (
     <>
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <AdminImageUploadComponent />
         {/* Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex justify-between items-center">
