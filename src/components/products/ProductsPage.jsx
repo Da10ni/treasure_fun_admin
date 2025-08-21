@@ -2756,7 +2756,7 @@ const ProductsPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Handling Fee <span className="text-red-500">*</span>
+                   Handling Fees <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
