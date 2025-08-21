@@ -12,7 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute"; // This should be AdminProtectedRoute
 import UpdateProfilePage from "./components/updateprofile/UpdateProfileForm";
 import HeroImage from "./pages/HeroImage";
-import Notification from "./pages/notification";
+import Notification from "./pages/Notification";
 
 function App() {
   return (
