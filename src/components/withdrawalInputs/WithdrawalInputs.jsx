@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Upload, X, FileImage } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AdminImageUploadComponent = () => {
   const [bep20Image, setBep20Image] = useState(null);
@@ -8,22 +9,15 @@ const AdminImageUploadComponent = () => {
   const [bep20Input, setBep20Input] = useState("");
   const [trc20Input, setTrc20Input] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const baseUrl = `${import.meta.env.VITE_API_BASE_URL}`;
 
   useEffect(() => {
-    // Check localStorage for any saved data
-    const storedBep20Image = localStorage.getItem("bep20Image");
-    const storedTrc20Image = localStorage.getItem("trc20Image");
-    const storedBep20Input = localStorage.getItem("bep20Input");
-    const storedTrc20Input = localStorage.getItem("trc20Input");
-
-    if (storedBep20Image) setBep20Image(JSON.parse(storedBep20Image));
-    if (storedTrc20Image) setTrc20Image(JSON.parse(storedTrc20Image));
-    if (storedBep20Input) setBep20Input(storedBep20Input);
-    if (storedTrc20Input) setTrc20Input(storedTrc20Input);
+    getData();
   }, []);
 
   const formatFileSize = (size) => {
+    if (!size || size <= 0) return "";
     if (size < 1024) return `${size} B`;
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
@@ -32,51 +26,51 @@ const AdminImageUploadComponent = () => {
   };
 
   const handleImageUpload = (event, side) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        alert("Please select a valid image file");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
-        return;
-      }
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = {
-          file: file,
-          preview: e.target.result,
-          name: file.name,
-          size: file.size,
-        };
-
-        if (side === "left") {
-          setBep20Image(imageData);
-          localStorage.setItem("bep20Image", JSON.stringify(imageData)); // Save to localStorage
-        } else {
-          setTrc20Image(imageData);
-          localStorage.setItem("trc20Image", JSON.stringify(imageData)); // Save to localStorage
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file");
+      return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size should be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageData = {
+        file,
+        preview: e.target.result,
+        name: file.name,
+        size: file.size,
+      };
+      if (side === "left") setBep20Image(imageData);
+      else setTrc20Image(imageData);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = (side) => {
+    if (side === "left") setBep20Image(null);
+    else setTrc20Image(null);
   };
 
   const handleSubmit = async () => {
     if (!bep20Image && !trc20Image && !bep20Input && !trc20Input) {
-      alert("Please provide at least one ID or image before submitting.");
+      toast.error("Please provide at least one ID or image before submitting.");
       return;
     }
 
     setIsLoading(true);
     const formData = new FormData();
 
-    if (bep20Image) formData.append("bep20Img", bep20Image.file);
-    if (trc20Image) formData.append("trc20Img", trc20Image.file);
-    if (bep20Input) formData.append("bep20Id", bep20Input);
-    if (trc20Input) formData.append("trc20Id", trc20Input);
+    // Only append files if they exist and are new uploads
+    if (bep20Image?.file) formData.append("bep20Img", bep20Image.file);
+    if (trc20Image?.file) formData.append("trc20Img", trc20Image.file);
+    if (bep20Input.trim()) formData.append("bep20Id", bep20Input.trim());
+    if (trc20Input.trim()) formData.append("trc20Id", trc20Input.trim());
 
     try {
       const token = localStorage.getItem("authToken");
@@ -85,31 +79,143 @@ const AdminImageUploadComponent = () => {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
+            // Don't set Content-Type, let axios set it automatically for FormData
           },
         }
       );
 
-      alert("Network data updated successfully!");
+      console.log("Update response:", response.data);
 
-     
-      } catch (error) {
+      // After successful update, fetch the latest data
+      await getData();
+
+      alert(response?.data?.message || "Network data updated successfully!");
+    } catch (error) {
       console.error("Error uploading data:", error);
-      alert("An error occurred while uploading. Please try again.");
+      alert(
+        error?.response?.data?.message ||
+          "An error occurred while uploading. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
+  const getData = async () => {
+    try {
+      setIsInitialLoading(true);
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        console.error("No auth token found");
+        return;
+      }
+
+      console.log("Fetching network images with token:", token);
+
+      // Use axios for GET request - much cleaner
+      const response = await axios.get(`${baseUrl}/admin/network-images`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response from network images API:", response.data);
+
+      const networks = response?.data?.data?.networks || {};
+      console.log("Fetched networks:", networks);
+
+      // Update state with fetched data
+      setBep20Input(networks.bep20Id || "");
+      setTrc20Input(networks.trc20Id || "");
+
+      // For existing images, don't include the file object since they're already uploaded
+      setBep20Image(
+        networks.bep20Img
+          ? {
+              preview: networks.bep20Img,
+              name: "BEP-20 Image",
+              size: 0,
+              isExisting: true, // Flag to identify existing images
+            }
+          : null
+      );
+      setTrc20Image(
+        networks.trc20Img
+          ? {
+              preview: networks.trc20Img,
+              name: "TRC-20 Image",
+              size: 0,
+              isExisting: true,
+            }
+          : null
+      );
+    } catch (error) {
+      console.error("Failed to fetch network images:", error);
+      // Check if it's an auth error
+      if (error.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        // Redirect to login or clear token
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+      }
+    } finally {
+      setIsInitialLoading(false);
+    }
+  };
+
+  const clearAll = async () => {
+    setBep20Image(null);
+    setTrc20Image(null);
+    setBep20Input("");
+    setTrc20Input("");
+    localStorage.removeItem("bep20Input");
+    localStorage.removeItem("trc20Input");
+
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No auth token found for clearing data");
+        return;
+      }
+      await axios.delete(
+        `${baseUrl}/admin/clear-network-images`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("All data cleared successfully!");
+    } catch (error) {
+      console.error("Failed to clear data:", error);
+      toast.error("Error clearing data.");
+    }
+  };
+
+  if (isInitialLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading network data...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-gray-800">
-          Admin Image Upload
+          Admin Network Management
         </h2>
         <p className="text-sm text-gray-600 mt-1">
-          Upload images and add Id for withdrawal management
+          Upload images and add IDs for withdrawal management
         </p>
       </div>
 
@@ -117,18 +223,16 @@ const AdminImageUploadComponent = () => {
         {/* BEP-20 Side */}
         <div className="space-y-4">
           <h3 className="text-md font-semibold text-blue-700">BEP-20</h3>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Id (BEP-20)
+              BEP-20 ID
             </label>
             <input
               type="text"
               value={bep20Input}
-              onChange={(e) => {
-                setBep20Input(e.target.value);
-                localStorage.setItem("bep20Input", e.target.value); // Save to localStorage
-              }}
-              placeholder="Enter BEP-20 Id..."
+              onChange={(e) => setBep20Input(e.target.value)}
+              placeholder="Enter BEP-20 ID..."
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               disabled={isLoading}
             />
@@ -136,26 +240,26 @@ const AdminImageUploadComponent = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Image (BEP-20)
+              BEP-20 QR Code Image
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 transition-colors">
               {!bep20Image ? (
                 <div className="text-center">
                   <input
                     type="file"
-                    id="left-image"
+                    id="bep20-image"
                     accept="image/*"
                     onChange={(e) => handleImageUpload(e, "left")}
                     className="hidden"
                     disabled={isLoading}
                   />
                   <label
-                    htmlFor="left-image"
+                    htmlFor="bep20-image"
                     className="cursor-pointer flex flex-col items-center space-y-2"
                   >
                     <Upload className="w-8 h-8 text-gray-400" />
                     <span className="text-sm text-gray-600">
-                      Click to upload image
+                      Click to upload QR code
                     </span>
                     <span className="text-xs text-gray-500">
                       PNG, JPG, GIF up to 5MB
@@ -167,16 +271,21 @@ const AdminImageUploadComponent = () => {
                   <div className="flex items-center space-x-3">
                     <img
                       src={bep20Image.preview}
-                      alt="BEP-20 preview"
+                      alt="BEP-20 QR Code"
                       className="w-16 h-16 object-cover rounded-lg border border-gray-200"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {bep20Image.name}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {formatFileSize(bep20Image.size)}
-                      </p>
+                      {bep20Image.size > 0 && (
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(bep20Image.size)}
+                        </p>
+                      )}
+                      {bep20Image.isExisting && (
+                        <p className="text-xs text-green-600">Current image</p>
+                      )}
                     </div>
                     <button
                       onClick={() => removeImage("left")}
@@ -189,14 +298,14 @@ const AdminImageUploadComponent = () => {
                   <div className="mt-2">
                     <input
                       type="file"
-                      id="left-image-replace"
+                      id="bep20-image-replace"
                       accept="image/*"
                       onChange={(e) => handleImageUpload(e, "left")}
                       className="hidden"
                       disabled={isLoading}
                     />
                     <label
-                      htmlFor="left-image-replace"
+                      htmlFor="bep20-image-replace"
                       className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
                     >
                       Replace image
@@ -211,18 +320,16 @@ const AdminImageUploadComponent = () => {
         {/* TRC-20 Side */}
         <div className="space-y-4">
           <h3 className="text-md font-semibold text-pink-700">TRC-20</h3>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Id (TRC-20)
+              TRC-20 ID
             </label>
             <input
               type="text"
               value={trc20Input}
-              onChange={(e) => {
-                setTrc20Input(e.target.value);
-                localStorage.setItem("trc20Input", e.target.value); // Save to localStorage
-              }}
-              placeholder="Enter TRC-20 Id..."
+              onChange={(e) => setTrc20Input(e.target.value)}
+              placeholder="Enter TRC-20 ID..."
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               disabled={isLoading}
             />
@@ -230,26 +337,26 @@ const AdminImageUploadComponent = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Image (TRC-20)
+              TRC-20 QR Code Image
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-pink-400 transition-colors">
               {!trc20Image ? (
                 <div className="text-center">
                   <input
                     type="file"
-                    id="right-image"
+                    id="trc20-image"
                     accept="image/*"
                     onChange={(e) => handleImageUpload(e, "right")}
                     className="hidden"
                     disabled={isLoading}
                   />
                   <label
-                    htmlFor="right-image"
+                    htmlFor="trc20-image"
                     className="cursor-pointer flex flex-col items-center space-y-2"
                   >
                     <Upload className="w-8 h-8 text-gray-400" />
                     <span className="text-sm text-gray-600">
-                      Click to upload image
+                      Click to upload QR code
                     </span>
                     <span className="text-xs text-gray-500">
                       PNG, JPG, GIF up to 5MB
@@ -261,16 +368,21 @@ const AdminImageUploadComponent = () => {
                   <div className="flex items-center space-x-3">
                     <img
                       src={trc20Image.preview}
-                      alt="TRC-20 preview"
+                      alt="TRC-20 QR Code"
                       className="w-16 h-16 object-cover rounded-lg border border-gray-200"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {trc20Image.name}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {formatFileSize(trc20Image.size)}
-                      </p>
+                      {trc20Image.size > 0 && (
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(trc20Image.size)}
+                        </p>
+                      )}
+                      {trc20Image.isExisting && (
+                        <p className="text-xs text-green-600">Current image</p>
+                      )}
                     </div>
                     <button
                       onClick={() => removeImage("right")}
@@ -283,14 +395,14 @@ const AdminImageUploadComponent = () => {
                   <div className="mt-2">
                     <input
                       type="file"
-                      id="right-image-replace"
+                      id="trc20-image-replace"
                       accept="image/*"
                       onChange={(e) => handleImageUpload(e, "right")}
                       className="hidden"
                       disabled={isLoading}
                     />
                     <label
-                      htmlFor="right-image-replace"
+                      htmlFor="trc20-image-replace"
                       className="text-xs text-pink-600 hover:text-pink-800 cursor-pointer"
                     >
                       Replace image
@@ -305,16 +417,7 @@ const AdminImageUploadComponent = () => {
 
       <div className="mt-6 flex justify-end space-x-3">
         <button
-          onClick={() => {
-            setBep20Image(null);
-            setTrc20Image(null);
-            setBep20Input("");
-            setTrc20Input("");
-            localStorage.removeItem("bep20Image");
-            localStorage.removeItem("trc20Image");
-            localStorage.removeItem("bep20Input");
-            localStorage.removeItem("trc20Input");
-          }}
+          onClick={clearAll}
           className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
           disabled={isLoading}
         >
@@ -324,7 +427,10 @@ const AdminImageUploadComponent = () => {
           onClick={handleSubmit}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={
-            (!bep20Input && !trc20Input && !bep20Image && !trc20Image) ||
+            (!bep20Input.trim() &&
+              !trc20Input.trim() &&
+              !bep20Image &&
+              !trc20Image) ||
             isLoading
           }
         >
