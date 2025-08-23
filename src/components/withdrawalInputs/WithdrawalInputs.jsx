@@ -74,23 +74,24 @@ const AdminImageUploadComponent = () => {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.post(
-        `${baseUrl}/admin/update-network-images`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            // Don't set Content-Type, let axios set it automatically for FormData
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}/admin/networks/update`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-      console.log("Update response:", response.data);
+      const data = await response.json();
+      console.log("Update response:", data);
 
-      // After successful update, fetch the latest data
-      await getData();
-
-      alert(response?.data?.message || "Network data updated successfully!");
+      if (data.success) {
+        // After successful update, fetch the latest data
+        await getData();
+        alert(data.message || "Network data updated successfully!");
+      } else {
+        alert(data.message || "Failed to update network data");
+      }
     } catch (error) {
       console.error("Error uploading data:", error);
       alert(
@@ -112,86 +113,127 @@ const AdminImageUploadComponent = () => {
         return;
       }
 
-      console.log("Fetching network images with token:", token);
+      console.log("Fetching network data with token:", token);
 
-      // Use axios for GET request - much cleaner
-      const response = await axios.get(`${baseUrl}/admin/network-images`, {
+      // ✅ Updated endpoint for Network collection
+      const response = await fetch(`${baseUrl}/admin/networks`, {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
 
-      console.log("Response from network images API:", response.data);
+      const data = await response.json();
+      console.log("Response from network API:", data);
 
-      const networks = response?.data?.data?.networks || {};
-      console.log("Fetched networks:", networks);
+      if (data.success) {
+        // ✅ Updated to handle Network collection response structure
+        const networkData =
+          data.data?.network || data.data?.networks?.[0] || {};
+        console.log("Fetched network data:", networkData);
 
-      // Update state with fetched data
-      setBep20Input(networks.bep20Id || "");
-      setTrc20Input(networks.trc20Id || "");
+        // Update state with fetched data
+        setBep20Input(networkData.bep20Id || "");
+        setTrc20Input(networkData.trc20Id || "");
 
-      // For existing images, don't include the file object since they're already uploaded
-      setBep20Image(
-        networks.bep20Img
-          ? {
-              preview: networks.bep20Img,
-              name: "BEP-20 Image",
-              size: 0,
-              isExisting: true, // Flag to identify existing images
-            }
-          : null
-      );
-      setTrc20Image(
-        networks.trc20Img
-          ? {
-              preview: networks.trc20Img,
-              name: "TRC-20 Image",
-              size: 0,
-              isExisting: true,
-            }
-          : null
-      );
-    } catch (error) {
-      console.error("Failed to fetch network images:", error);
-      // Check if it's an auth error
-      if (error.response?.status === 401) {
-        alert("Session expired. Please login again.");
-        // Redirect to login or clear token
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
+        // For existing images, don't include the file object since they're already uploaded
+        setBep20Image(
+          networkData.bep20Img
+            ? {
+                preview: networkData.bep20Img,
+                name: "BEP-20 Image",
+                size: 0,
+                isExisting: true, // Flag to identify existing images
+              }
+            : null
+        );
+        setTrc20Image(
+          networkData.trc20Img
+            ? {
+                preview: networkData.trc20Img,
+                name: "TRC-20 Image",
+                size: 0,
+                isExisting: true,
+              }
+            : null
+        );
       }
+    } catch (error) {
+      console.error("Failed to fetch network data:", error);
+      // Check if it's an auth error
+      // if (error.response?.status === 401) {
+      //   alert("Session expired. Please login again.");
+      //   // Redirect to login or clear token
+      //   localStorage.removeItem("authToken");
+      //   localStorage.removeItem("user");
+      // } else if (error.response?.status === 404) {
+      //   console.log(
+      //     "No network data found - this is normal for first time setup"
+      //   );
+      //   // Don't show error for 404, it's normal when no network data exists yet
+      // } else {
+      //   alert("Failed to fetch network data");
+      // }
     } finally {
       setIsInitialLoading(false);
     }
   };
 
   const clearAll = async () => {
-    setBep20Image(null);
-    setTrc20Image(null);
-    setBep20Input("");
-    setTrc20Input("");
-    localStorage.removeItem("bep20Input");
-    localStorage.removeItem("trc20Input");
+    const confirmClear = window.confirm(
+      "⚠️ Are you sure you want to clear all network data?\n\nThis will delete:\n• All wallet addresses\n• All QR code images\n\nThis action cannot be undone!"
+    );
+
+    if (!confirmClear) return;
 
     try {
       const token = localStorage.getItem("authToken");
+
       if (!token) {
-        console.error("No auth token found for clearing data");
+        alert("Authentication token not found. Please login again.");
         return;
       }
-      await axios.delete(
-        `${baseUrl}/admin/clear-network-images`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+
+      const response = await fetch(`${baseUrl}/admin/networks/clear`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setBep20Image(null);
+        setTrc20Image(null);
+        setBep20Input("");
+        setTrc20Input("");
+
+        // Clear any localStorage cache
+        localStorage.removeItem("bep20Input");
+        localStorage.removeItem("trc20Input");
+
+        alert("✅ All network data cleared successfully!");
+
+        // Refresh data from server to confirm
+        await getData();
+      } else {
+        if (response.status === 404) {
+          alert("ℹ️ No network data found to clear.");
+        } else {
+          alert(data.message || "Failed to clear network data");
         }
-      );
-      toast.success("All data cleared successfully!");
+      }
     } catch (error) {
-      console.error("Failed to clear data:", error);
-      toast.error("Error clearing data.");
+      console.error("❌ Error clearing data:", error);
+
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        alert("Network error: Unable to connect to server");
+      } else {
+        alert("Error clearing network data. Please try again.");
+      }
     }
   };
 
