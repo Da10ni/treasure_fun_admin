@@ -26,7 +26,7 @@ const Deposit = () => {
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-  const fetchDeposits = async () => {
+  const fetchDeposits = async (page = 1, status = "") => {
     try {
       setLoading(true);
       setError(null);
@@ -133,7 +133,7 @@ const Deposit = () => {
 
       if (data.success) {
         // Refresh deposits
-        await fetchDeposits();
+        await fetchDeposits(currentPage, filterStatus);
 
         toast.success("✅ Deposit approved successfully!", {
           position: "top-right",
@@ -251,7 +251,7 @@ const Deposit = () => {
 
       if (data.success) {
         // Refresh deposits
-        await fetchDeposits();
+        await fetchDeposits(currentPage, filterStatus);
 
         toast.success("❌ Deposit rejected successfully!", {
           position: "top-right",
@@ -388,25 +388,39 @@ const Deposit = () => {
                 Deposit Management
               </h3>
               <p className="text-sm text-gray-500 mt-1">
-                Total: {deposits.length} deposits
+                Manage deposit requests • Total: {pagination.totalItems || deposits.length} deposits
               </p>
             </div>
-            <button
-              onClick={() => {
-                toast.info("Refreshing deposits...", {
-                  position: "top-right",
-                  autoClose: 1000,
-                });
-                fetchDeposits();
-              }}
-              className="flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-              disabled={loading}
-            >
-              <RefreshCw
-                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-              />
-              Refresh
-            </button>
+
+            {/* Status Filter and Refresh */}
+            <div className="flex gap-2">
+              <select
+                value={filterStatus}
+                onChange={(e) => handleFilterChange(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <button
+                onClick={() => {
+                  toast.info("Refreshing deposits...", {
+                    position: "top-right",
+                    autoClose: 1000,
+                  });
+                  fetchDeposits(currentPage, filterStatus);
+                }}
+                className="flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm transition-colors"
+                disabled={loading}
+              >
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
+                Refresh
+              </button>
+            </div>
           </div>
         </div>
 
