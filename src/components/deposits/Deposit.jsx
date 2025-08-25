@@ -19,6 +19,10 @@ const Deposit = () => {
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pagination, setPagination] = useState({});
+  const [filterStatus, setFilterStatus] = useState("");
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -60,6 +64,12 @@ const Deposit = () => {
       if (data.success) {
         const depositsData = data.data.deposits || data.data;
         setDeposits(depositsData);
+
+        if (data.data.pagination) {
+          setPagination(data.data.pagination);
+          setTotalPages(data.data.pagination.totalPages);
+          setCurrentPage(data.data.pagination.currentPage);
+        }
       } else {
         throw new Error(data.message || "Failed to fetch deposits");
       }
@@ -307,13 +317,26 @@ const Deposit = () => {
   const handleFilterChange = (status) => {
     setFilterStatus(status);
     setCurrentPage(1);
+
+    const filterText = status ? `"${status}"` : "all";
+    toast.info(`Filtering by ${filterText} status...`, {
+      position: "top-right",
+      autoClose: 1500,
+    });
+
     fetchDeposits(1, status);
   };
 
   // Handle page change
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    fetchDeposits(page, filterStatus);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      toast.info(`Loading page ${page}...`, {
+        position: "top-right",
+        autoClose: 1000,
+      });
+      fetchDeposits(page, filterStatus);
+    }
   };
 
   // Format date
@@ -537,184 +560,232 @@ const Deposit = () => {
                 </div>
               )}
             </div>
+            {totalPages > 1 && (
+              <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+                <div className="text-sm text-gray-500">
+                  Showing page {currentPage} of {totalPages} •{" "}
+                  {pagination.totalItems || 0} total entries
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  {/* Page numbers */}
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const pageNum = Math.max(1, currentPage - 2) + i;
+                    if (pageNum > totalPages) return null;
+
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-3 py-1 rounded text-sm transition-colors ${currentPage === pageNum
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 hover:bg-gray-300"
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         )}
-      </div>
+
+
+      </div >
 
       {/* Detail Modal */}
-      {showDetailModal && selectedDeposit && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-100">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold">Deposit Details</h3>
-                <button
-                  onClick={() => {
-                    setShowDetailModal(false);
-                    toast.info("Closed deposit details", {
-                      position: "top-right",
-                      autoClose: 1000,
-                    });
-                  }}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
+      {
+        showDetailModal && selectedDeposit && (
+          <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-100">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-semibold">Deposit Details</h3>
+                  <button
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      toast.info("Closed deposit details", {
+                        position: "top-right",
+                        autoClose: 1000,
+                      });
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Basic Information */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Deposit ID
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900 font-mono">
-                      #{selectedDeposit._id}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      User
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {selectedDeposit.userId?.name || "Unknown"}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {selectedDeposit.userId?.email || ""}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Product
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {selectedDeposit.productId?.title || "Unknown Product"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Amount
-                    </label>
-                    <p className="mt-1 text-lg font-semibold text-green-600">
-                      ${selectedDeposit.amount?.toLocaleString() || "0"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Status
-                    </label>
-                    <span
-                      className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                        selectedDeposit.status
-                      )}`}
-                    >
-                      {selectedDeposit.status}
-                    </span>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Created At
-                    </label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {formatDate(selectedDeposit.createdAt)}
-                    </p>
-                  </div>
-
-                  {selectedDeposit.referredBy && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Basic Information */}
+                  <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
-                        Referred By
+                        Deposit ID
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900 font-mono">
+                        #{selectedDeposit._id}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        User
                       </label>
                       <p className="mt-1 text-sm text-gray-900">
-                        {selectedDeposit.referredBy}
+                        {selectedDeposit.userId?.name || "Unknown"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {selectedDeposit.userId?.email || ""}
                       </p>
                     </div>
-                  )}
-                </div>
 
-                {/* Attachment */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Payment Proof
-                  </label>
-                  {selectedDeposit.attachment ? (
-                    <div className="border rounded-lg overflow-hidden">
-                      <img
-                        src={selectedDeposit.attachment}
-                        alt="Payment proof"
-                        className="w-full h-64 object-cover"
-                        onError={(e) => {
-                          e.target.src =
-                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBzdHJva2U9IiM2QjczODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=";
-                          toast.error("Failed to load image", {
-                            position: "top-right",
-                            autoClose: 3000,
-                          });
-                        }}
-                      />
-                      <div className="p-2 bg-gray-50">
-                        <a
-                          href={selectedDeposit.attachment}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 text-sm"
-                          onClick={() => {
-                            toast.info("Opening image in new tab", {
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Product
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {selectedDeposit.productId?.title || "Unknown Product"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Amount
+                      </label>
+                      <p className="mt-1 text-lg font-semibold text-green-600">
+                        ${selectedDeposit.amount?.toLocaleString() || "0"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Status
+                      </label>
+                      <span
+                        className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                          selectedDeposit.status
+                        )}`}
+                      >
+                        {selectedDeposit.status}
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Created At
+                      </label>
+                      <p className="mt-1 text-sm text-gray-900">
+                        {formatDate(selectedDeposit.createdAt)}
+                      </p>
+                    </div>
+
+                    {selectedDeposit.referredBy && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Referred By
+                        </label>
+                        <p className="mt-1 text-sm text-gray-900">
+                          {selectedDeposit.referredBy}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Attachment */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Payment Proof
+                    </label>
+                    {selectedDeposit.attachment ? (
+                      <div className="border rounded-lg overflow-hidden">
+                        <img
+                          src={selectedDeposit.attachment}
+                          alt="Payment proof"
+                          className="w-full h-64 object-cover"
+                          onError={(e) => {
+                            e.target.src =
+                              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBzdHJva2U9IiM2QjczODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=";
+                            toast.error("Failed to load image", {
                               position: "top-right",
-                              autoClose: 1500,
+                              autoClose: 3000,
                             });
                           }}
-                        >
-                          View Full Size
-                        </a>
+                        />
+                        <div className="p-2 bg-gray-50">
+                          <a
+                            href={selectedDeposit.attachment}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 text-sm"
+                            onClick={() => {
+                              toast.info("Opening image in new tab", {
+                                position: "top-right",
+                                autoClose: 1500,
+                              });
+                            }}
+                          >
+                            View Full Size
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                      <Package className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-500">
-                        No attachment uploaded
-                      </p>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                        <Package className="mx-auto h-12 w-12 text-gray-400" />
+                        <p className="mt-2 text-sm text-gray-500">
+                          No attachment uploaded
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Actions */}
-              {selectedDeposit.status === "pending" && (
-                <div className="mt-6 flex gap-3 justify-end">
-                  <button
-                    onClick={() => {
-                      handleReject(selectedDeposit._id);
-                      setShowDetailModal(false);
-                    }}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
-                  >
-                    <X className="w-4 h-4" />
-                    Reject
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleApprove(selectedDeposit._id);
-                      setShowDetailModal(false);
-                    }}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center gap-2"
-                  >
-                    <Check className="w-4 h-4" />
-                    Approve
-                  </button>
-                </div>
-              )}
+                {/* Actions */}
+                {selectedDeposit.status === "pending" && (
+                  <div className="mt-6 flex gap-3 justify-end">
+                    <button
+                      onClick={() => {
+                        handleReject(selectedDeposit._id);
+                        setShowDetailModal(false);
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
+                    >
+                      <X className="w-4 h-4" />
+                      Reject
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleApprove(selectedDeposit._id);
+                        setShowDetailModal(false);
+                      }}
+                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center gap-2"
+                    >
+                      <Check className="w-4 h-4" />
+                      Approve
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </>
   );
 };
