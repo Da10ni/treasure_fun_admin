@@ -826,22 +826,6 @@ const LoginForm = () => {
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      {/* Signup Link */}
-      <div className="text-center">
-        <span className="text-gray-600 text-sm">Don't have an account? </span>
-        <Link
-          to="/signup"
-          className="text-cyan-400 hover:text-cyan-500 text-sm"
-          onClick={() => {
-            toast.info("Redirecting to signup...", {
-              position: "top-right",
-              autoClose: 1500,
-            });
-          }}
-        >
-          Signup
-        </Link>
-      </div>
 
       {/* Help Section */}
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
