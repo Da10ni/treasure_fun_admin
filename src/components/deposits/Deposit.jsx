@@ -41,7 +41,13 @@ const Deposit = () => {
         return;
       }
 
-      const response = await fetch(`${API_BASE}/deposits`, {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: "10",
+        ...(status && { status }),
+      });
+
+      const response = await fetch(`${API_BASE}/deposits?${params}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
