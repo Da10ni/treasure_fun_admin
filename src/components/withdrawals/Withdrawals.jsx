@@ -482,7 +482,7 @@ const WithdrawalsPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="font-medium text-gray-900">
-                          {withdrawal.userId?.name || "Unknown User"}
+                          {withdrawal.userId?.username || "Unknown User"}
                         </div>
                         <div className="text-sm text-gray-500">
                           {withdrawal.userId?.email || "No email"}

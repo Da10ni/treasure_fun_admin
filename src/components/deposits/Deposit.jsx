@@ -450,7 +450,7 @@ const Deposit = () => {
                           <User className="w-4 h-4 text-gray-400" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {deposit.userId?.name || "Unknown User"}
+                              {deposit.userId?.username || "Unknown User"}
                             </div>
                             <div className="text-sm text-gray-500">
                               {deposit.userId?.email || ""}
