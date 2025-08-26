@@ -30,11 +30,11 @@ const AdminImageUploadComponent = () => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please select a valid image file");
+      toast.error("Please select a valid image file");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert("Image size should be less than 5MB");
+      toast.error("Image size should be less than 5MB");
       return;
     }
 
@@ -88,13 +88,13 @@ const AdminImageUploadComponent = () => {
       if (data.success) {
         // After successful update, fetch the latest data
         await getData();
-        alert(data.message || "Network data updated successfully!");
+        toast.success(data.message || "Network data updated successfully!");
       } else {
-        alert(data.message || "Failed to update network data");
+        toast.error(data.message || "Failed to update network data");
       }
     } catch (error) {
       console.error("Error uploading data:", error);
-      alert(
+      toast.error(
         error?.response?.data?.message ||
           "An error occurred while uploading. Please try again."
       );
@@ -191,7 +191,7 @@ const AdminImageUploadComponent = () => {
       const token = localStorage.getItem("authToken");
 
       if (!token) {
-        alert("Authentication token not found. Please login again.");
+        toast.error("Authentication token not found. Please login again.");
         return;
       }
 
@@ -215,24 +215,24 @@ const AdminImageUploadComponent = () => {
         localStorage.removeItem("bep20Input");
         localStorage.removeItem("trc20Input");
 
-        alert("✅ All network data cleared successfully!");
+        toast.success(" All network data cleared successfully!");
 
         // Refresh data from server to confirm
         await getData();
       } else {
         if (response.status === 404) {
-          alert("ℹ️ No network data found to clear.");
+          toast.error("ℹ️ No network data found to clear.");
         } else {
-          alert(data.message || "Failed to clear network data");
+          toast.error(data.message || "Failed to clear network data");
         }
       }
     } catch (error) {
       console.error("❌ Error clearing data:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        alert("Network error: Unable to connect to server");
+        toast.error("Network error: Unable to connect to server");
       } else {
-        alert("Error clearing network data. Please try again.");
+        toast.error("Error clearing network data. Please try again.");
       }
     }
   };
