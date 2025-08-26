@@ -10,7 +10,7 @@ const DashboardStats = () => {
 
   const token = localStorage.getItem("authToken");
 
-  const baseUrl = `${import.meta.env.VITE_BASE_URL}`
+  const baseUrl = `${import.meta.env.VITE_API_BASE_URL}`;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,15 +21,12 @@ const DashboardStats = () => {
       }
 
       try {
-        const response = await axios.get(
-          `${baseUrl}/admin/getactiveuser`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get(`${baseUrl}/admin/getactiveuser`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         console.log("fetch data active user", response);
 
@@ -61,15 +58,12 @@ const DashboardStats = () => {
       }
 
       try {
-        const response = await axios.get(
-          `${baseUrl}/products/allproducts`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${baseUrl}/products/allproducts`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         console.log("fetch data products", response);
 
@@ -114,7 +108,7 @@ const DashboardStats = () => {
       color: "bg-blue-500",
     },
     {
-      title: "Active Packages",
+      title: "Active Products",
       value: loading ? "Loading..." : activePackages,
       icon: <PackageCheck size={20} />,
       change: "+1",

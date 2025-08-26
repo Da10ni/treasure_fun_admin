@@ -7,7 +7,7 @@ const Dashboard = () => {
   const [deposits, setDeposits] = useState([]);
   const [withdrawals, setWithdrawals] = useState([]);
 
-  const baseUrl = `${import.meta.env.VITE_BASE_URL}`
+  const baseUrl = `${import.meta.env.VITE_API_BASE_URL}`
 
   const [loading, setLoading] = useState(true);
 
