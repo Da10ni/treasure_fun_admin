@@ -108,7 +108,7 @@ const DashboardStats = () => {
       color: "bg-blue-500",
     },
     {
-      title: "Active Packages",
+      title: "Active Products",
       value: loading ? "Loading..." : activePackages,
       icon: <PackageCheck size={20} />,
       change: "+1",
