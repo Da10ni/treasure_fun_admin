@@ -159,7 +159,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
               {sidebarOpen && <span className="ml-3">Products</span>}
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to={"/referrals"}
               onClick={() => setActiveTab("referrals")}
@@ -170,7 +170,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
               <Gift size={20} />
               {sidebarOpen && <span className="ml-3">Referral Settings</span>}
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               to={"/images"}

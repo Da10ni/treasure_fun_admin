@@ -10,13 +10,12 @@ const Header = ({ activeTab, setActiveTab }) => {
       <div className="flex items-center justify-between p-4 relative">
         <div className="flex items-center">
           <h2 className="text-xl font-semibold">
-            {activeTab === "update-profile" && "Update Profile"}
             {activeTab === "dashboard" && "Dashboard Overview"}
             {activeTab === "deposits" && "Deposit Verification"}
             {activeTab === "withdrawals" && "Withdrawal Management"}
             {activeTab === "users" && "User Management"}
             {activeTab === "packages" && "Package Management"}
-            {activeTab === "referrals" && "Referral Settings"}
+            {/* {activeTab === "referrals" && "Referral Settings"} */}
           </h2>
         </div>
 

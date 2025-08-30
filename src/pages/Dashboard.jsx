@@ -33,22 +33,7 @@ const Dashboard = () => {
         }
 
         // Use dummy data for withdrawals as shown in your screenshot
-        setWithdrawals([
-          {
-            id: 101,
-            user: "emma_wilson",
-            amount: "$320.00",
-            date: "2025-07-15",
-            status: "completed",
-          },
-          {
-            id: 102,
-            user: "david_brown",
-            amount: "$1,500.00",
-            date: "2025-07-14",
-            status: "processing",
-          },
-        ]);
+        setWithdrawals();
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {

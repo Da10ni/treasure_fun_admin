@@ -123,21 +123,6 @@ function AdminProfileDropdown({ isOpen, onClose, setActiveTab }) {
         </div>
 
         <div className="py-1">
-          <Link
-            to={`/update-profile/${user?._id}`}
-            onClick={() => {
-              setActiveTab("update-profile");
-              toast.info("Opening profile settings...", {
-                position: "top-right",
-                autoClose: 2000,
-              });
-            }}
-            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-          >
-            <User className="w-4 h-4 mr-3 text-gray-500" />
-            <span>Update Profile</span>
-          </Link>
-
           <button
             onClick={() => handleOption("Logout")}
             className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 hover:text-red-600"

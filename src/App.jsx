@@ -101,7 +101,7 @@ function App() {
         {/* =============================================
             REFERRAL MANAGEMENT (Admin)
             ============================================= */}
-        <Route
+        {/* <Route
           path="/referrals"
           element={
             <ProtectedRoute>
@@ -110,7 +110,7 @@ function App() {
               </MainLayout>
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/Notification"
@@ -139,7 +139,7 @@ function App() {
         {/* =============================================
             ADMIN PROFILE MANAGEMENT
             ============================================= */}
-        <Route
+        {/* <Route
           path="/update-profile/:id"
           element={
             <ProtectedRoute>
@@ -148,7 +148,7 @@ function App() {
               </MainLayout>
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         {/* =============================================
             ADMIN ADDITIONAL ROUTES (Optional)
