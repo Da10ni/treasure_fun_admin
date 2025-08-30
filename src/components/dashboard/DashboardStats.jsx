@@ -2,7 +2,7 @@ import axios from "axios";
 import { ArrowDownLeft, ArrowUpRight, PackageCheck, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-const DashboardStats = () => {
+const DashboardStats = ({ withdrawals, deposits }) => {
   const [state, setState] = useState({ activeUsersCount: 0 });
   const [activePackages, setActivePackages] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -30,63 +30,62 @@ const DashboardStats = () => {
 
         console.log("fetch data active user", response);
 
-        if (response.data.success) {
-          const activeUsersCount = response.data.data.users.length;
-          setState({
-            activeUsersCount: activeUsersCount,
-          });
-        }
+        const activeUsersCount = response.data.data.users.length;
+        setState({
+          activeUsersCount: activeUsersCount,
+        });
       } catch (error) {
         console.error(
           "Error fetching user data:",
           error.response?.data || error.message
         );
-        setError("Failed to fetch user data");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserData();
   }, [token]);
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      if (!token) {
-        console.error("No authentication token found");
-        setError("Authentication token missing");
-        setLoading(false);
-        return;
-      }
+  // useEffect(() => {
+  //   const fetchProductData = async () => {
+  //     if (!token) {
+  //       console.error("No authentication token found");
+  //       setError("Authentication token missing");
+  //       setLoading(false);
+  //       return;
+  //     }
 
-      try {
-        const response = await axios.get(`${baseUrl}/products/allproducts`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  //     try {
+  //       const response = await axios.get(`${baseUrl}/products/allproducts`, {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-        console.log("fetch data products", response);
+  //       console.log("fetch data products", response);
 
-        if (response.data.success) {
-          const activeProductsCount = response.data.data.filter(
-            (product) => product.status === "active"
-          ).length;
+  //       if (response.data.success) {
+  //         const activeProductsCount = response.data.data.filter(
+  //           (product) => product.status === "active"
+  //         ).length;
 
-          setActivePackages(activeProductsCount);
-        }
-      } catch (error) {
-        console.error(
-          "Error fetching product data:",
-          error.response?.data || error.message
-        );
-        setError("Failed to fetch product data");
-      } finally {
-        setLoading(false);
-      }
-    };
+  //         setActivePackages(activeProductsCount);
+  //       }
+  //     } catch (error) {
+  //       console.error(
+  //         "Error fetching product data:",
+  //         error.response?.data || error.message
+  //       );
+  //       setError("Failed to fetch product data");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchProductData();
-  }, [token]);
+  //   fetchProductData();
+  // }, [token]);
 
   // Check if token exists
   if (!token) {
@@ -102,28 +101,28 @@ const DashboardStats = () => {
   const overviewStats = [
     {
       title: "Total Users",
-      value: loading ? "Loading..." : state.activeUsersCount,
+      value: state.activeUsersCount,
       icon: <Users size={20} />,
       change: "+12%",
       color: "bg-blue-500",
     },
+    // {
+    //   title: "Active Products",
+    //   value: loading ? "Loading..." : activePackages,
+    //   icon: <PackageCheck size={20} />,
+    //   change: "+1",
+    //   color: "bg-green-500",
+    // },
     {
-      title: "Active Products",
-      value: loading ? "Loading..." : activePackages,
-      icon: <PackageCheck size={20} />,
-      change: "+1",
-      color: "bg-green-500",
-    },
-    {
-      title: "Pending Deposits",
-      value: "$2,450",
+      title: "Total Deposits",
+      value: deposits?.length,
       icon: <ArrowDownLeft size={20} />,
       change: "+$750",
       color: "bg-yellow-500",
     },
     {
-      title: "Pending Withdrawals",
-      value: "$1,820",
+      title: "Total Withdrawals",
+      value: withdrawals?.length,
       icon: <ArrowUpRight size={20} />,
       change: "-$320",
       color: "bg-purple-500",
@@ -146,7 +145,6 @@ const DashboardStats = () => {
           <div>
             <p className="text-sm font-medium text-gray-500">{stat?.title}</p>
             <p className="text-2xl font-bold">{stat?.value}</p>
-            <p className="text-sm text-green-500">{stat?.change}</p>
           </div>
           <div className={`${stat?.color} p-3 rounded-lg text-white`}>
             {stat?.icon}

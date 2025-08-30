@@ -32,8 +32,6 @@ const Dashboard = () => {
           setDeposits(allDeposits.slice(0, 5)); // Just take first 5
         }
 
-        // Use dummy data for withdrawals as shown in your screenshot
-        setWithdrawals();
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -87,7 +85,7 @@ const Dashboard = () => {
 
   return (
     <div className="p-4">
-      <DashboardStats />
+      <DashboardStats deposits={deposits} withdrawals={withdrawals} />
       <div className="w-full flex flex-col gap-6 py-5">
         {loading ? (
           <div className="flex justify-center py-8">
