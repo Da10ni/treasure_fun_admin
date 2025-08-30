@@ -660,11 +660,11 @@ const HeroImage = () => {
         setHeroVideo(data.data && data.data.length > 0 ? data.data[0] : null);
       } else {
         console.error("API Error:", data.message);
-        showToast(data.message || "Failed to fetch video", "error");
+        // showToast(data.message || "Failed to fetch video", "error");
       }
     } catch (error) {
       console.error("Error fetching hero video:", error);
-      showToast("Network error. Please check your connection.", "error");
+      // showToast("Network error. Please check your connection.", "error");
     } finally {
       setLoading(false);
     }
@@ -702,11 +702,11 @@ const HeroImage = () => {
         setHeroImages(data.data);
       } else {
         console.error("API Error:", data.message);
-        showToast(data.message || "Failed to fetch images", "error");
+        // showToast(data.message || "Failed to fetch images", "error");
       }
     } catch (error) {
       console.error("Error fetching hero images:", error);
-      showToast("Network error. Please check your connection.", "error");
+      // showToast("Network error. Please check your connection.", "error");
     } finally {
       setLoading(false);
     }
@@ -787,7 +787,7 @@ const HeroImage = () => {
         fetchHeroVideo();
         document.getElementById("videoFileInput").value = "";
       } else {
-        showToast(data.message || "Video upload failed", "error");
+        // showToast(data.message || "Video upload failed", "error");
       }
     } catch (error) {
       console.error("Error uploading video:", error);
@@ -1009,7 +1009,7 @@ const HeroImage = () => {
         </div>
 
         {/* Video Upload Section */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        {/* <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h3 className="text-xl font-semibold mb-6 text-gray-800 flex items-center">
             <Video className="w-6 h-6 mr-2 text-purple-600" />
             {heroVideo ? "Replace Hero Video" : "Upload Hero Video"}
@@ -1067,10 +1067,10 @@ const HeroImage = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Current Video Display */}
-        {heroVideo && (
+        {/* {heroVideo && (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 flex items-center">
@@ -1137,7 +1137,7 @@ const HeroImage = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Image Upload Section */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
