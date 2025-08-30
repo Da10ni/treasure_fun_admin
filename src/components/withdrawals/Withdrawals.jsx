@@ -58,6 +58,8 @@ const WithdrawalsPage = () => {
 
       const data = await response.json();
 
+      console.log("check data", data);
+
       if (data.success) {
         setWithdrawals(data.data.withdrawals);
         setPagination(data.data.pagination);
@@ -436,6 +438,9 @@ const WithdrawalsPage = () => {
                   Wallet ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Wallet Address
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -493,9 +498,12 @@ const WithdrawalsPage = () => {
                       {formatCurrency(withdrawal.amount)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
-                      {withdrawal.walletId
-                        ? `...${withdrawal.walletId.slice(-8)}`
+                      {withdrawal.walletType
+                        ? `${withdrawal.walletType}`
                         : "N/A"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
+                      {withdrawal?.walletAddress  ? withdrawal?.walletAddress: "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(withdrawal.requestDate)}
