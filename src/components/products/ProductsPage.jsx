@@ -2120,10 +2120,9 @@ const ProductsPage = () => {
 
     if (
       !formData.income ||
-      Number(formData.income) < 0 ||
-      Number(formData.income) > 100
+      Number(formData.income) < 0
     ) {
-      toast.error("Stack percentage must be between 0 and 100", {
+      toast.error("Stack percentage must be greater than 0", {
         position: "top-right",
         autoClose: 3000,
       });
@@ -2691,7 +2690,6 @@ const ProductsPage = () => {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    max="100"
                     step="0.1"
                     placeholder="15.5"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"

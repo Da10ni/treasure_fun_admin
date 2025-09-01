@@ -550,7 +550,6 @@
 
 // export default HeroImage;
 
-
 import React, { useState, useEffect } from "react";
 import {
   X,
@@ -779,7 +778,9 @@ const HeroImage = () => {
 
       if (data.success) {
         showToast(
-          heroVideo ? "Hero video replaced successfully!" : "Hero video uploaded successfully!",
+          heroVideo
+            ? "Hero video replaced successfully!"
+            : "Hero video uploaded successfully!",
           "success"
         );
         setSelectedVideoFile(null);
@@ -1022,7 +1023,8 @@ const HeroImage = () => {
               {heroVideo && (
                 <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <p className="text-sm text-yellow-800 text-center">
-                    ⚠️ A hero video already exists. Uploading will replace the current video.
+                    ⚠️ A hero video already exists. Uploading will replace the
+                    current video.
                   </p>
                 </div>
               )}
@@ -1067,10 +1069,9 @@ const HeroImage = () => {
               </button>
             </div>
           </div>
-        </div> */}
+        </div>
 
-        {/* Current Video Display */}
-        {/* {heroVideo && (
+        {heroVideo && (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 flex items-center">
@@ -1082,8 +1083,10 @@ const HeroImage = () => {
             <div className="p-6">
               <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center space-x-4">
-                  <div className="relative w-24 h-16 bg-gray-100 rounded-lg border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
-                       onClick={handleViewVideo}>
+                  <div
+                    className="relative w-24 h-16 bg-gray-100 rounded-lg border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+                    onClick={handleViewVideo}
+                  >
                     <video
                       src={`${heroVideo.video}`}
                       className="w-full h-full object-cover"
@@ -1093,7 +1096,7 @@ const HeroImage = () => {
                       <Play className="w-6 h-6 text-white" />
                     </div>
                   </div>
-                  
+
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
@@ -1101,14 +1104,21 @@ const HeroImage = () => {
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Uploaded by: <span className="font-medium">{heroVideo.userId?.name || "Admin"}</span>
+                      Uploaded by:{" "}
+                      <span className="font-medium">
+                        {heroVideo.userId?.name || "Admin"}
+                      </span>
                     </p>
                     <p className="text-sm text-gray-600">
-                      Date: {new Date(heroVideo.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      Date:{" "}
+                      {new Date(heroVideo.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
                     </p>
                   </div>
                 </div>
@@ -1503,7 +1513,7 @@ const HeroImage = () => {
             </div>
             <button
               onClick={() => removeToast(toast.id)}
-              className="ml-4 hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-colors"
+              className="ml-4 hover:bg-white hover:text-black hover:bg-opacity-20 rounded-full p-1 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
